@@ -4,26 +4,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <groupId>jakarta-oro</groupId>
+        <groupId>com.github.fangjinuo.jakarta-oro</groupId>
         <artifactId>jakarta-oro-parent</artifactId>
         <version>2.0.8</version>
     </parent>
 
-    <modelVersion>4.0.0</modelVersion>    
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>ant-jakarta-oro</artifactId>
     <description>ant tools for oro</description>
-    
+
 
     <dependencies>
-	<dependency>
-	    <groupId>jakarta-oro</groupId>
-            <artifactId>jakarta-oro</artifactId>            
-	</dependency>
-	<dependency>
-	    <groupId>org.apache.ant</groupId>
+        <dependency>
+            <groupId>com.github.fangjinuo.jakarta-oro</groupId>
+            <artifactId>jakarta-oro</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.7.0</version>
-	</dependency>
+        </dependency>
     </dependencies>
 
     <build>
