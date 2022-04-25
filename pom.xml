@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>jakarta-oro</groupId>
+    <artifactId>jakarta-oro-parent</artifactId>
+    <version>2.0.8</version>
+    <description>oro regexp : perl5, awk, glob pattern</description>
+    
+
+    <modules>
+        <module>jakarta-oro</module>
+        <module>ant-jakarta-oro</module>
+    </modules>
+    
+    <packaging>pom</packaging>
+
+
+
+    <dependencyManagement>
+        <dependencies>
+	    <dependency>
+		<groupId>jakarta-oro</groupId>
+		<artifactId>jakarta-oro</artifactId>
+		<version>${project.version}</version>
+	    </dependency>       
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/java</directory>
+                <targetPath>${project.build.testOutputDirectory}</targetPath>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+            <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+                <targetPath>${project.build.testOutputDirectory}</targetPath>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+        </testResources>
+    </build>
+</project>

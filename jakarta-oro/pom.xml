@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>jakarta-oro</groupId>
+        <artifactId>jakarta-oro-parent</artifactId>
+        <version>2.0.8</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>    
+    <artifactId>jakarta-oro</artifactId>
+    <description>oro regexp : perl5, awk, glob pattern</description>
+    
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/java</directory>
+                <targetPath>${project.build.testOutputDirectory}</targetPath>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+            <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+                <targetPath>${project.build.testOutputDirectory}</targetPath>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+        </testResources>
+    </build>
+</project>
