@@ -10,12 +10,33 @@
     <description>oro regexp : perl5, awk, glob pattern</description>
 
     <packaging>pom</packaging>
-
+    <name>jakarta-oro-parent</name>
     <modules>
         <module>jakarta-oro</module>
         <module>ant-jakarta-oro</module>
     </modules>
 
+    <properties>
+        <scm.url.github>https://github.com/fangjinuo/jakarta-oro</scm.url.github>
+        <scm.url.ssh>git@github.com:fangjinuo/jakarta-oro.git</scm.url.ssh>
+    </properties>
+    <url>${scm.url.github}</url>
+    <licenses>
+        <license>
+            <name>Apache Version 2.0</name>
+            <url>${scm.url.github}/LICENSE</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>${scm.url.ssh}</url>
+    </scm>
+    <developers>
+        <developer>
+            <name>jinuo.fang</name>
+            <url>https://github.com/fangjinuo</url>
+            <email>fs1194361820@163.com</email>
+        </developer>
+    </developers>
     <dependencyManagement>
         <dependencies>
             <dependency>
