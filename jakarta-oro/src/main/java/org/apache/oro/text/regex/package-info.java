@@ -1,5 +1,4 @@
-<!-- $Id: package.html,v 1.2 2001/05/17 19:00:55 dfs Exp $ -->
-<body>
+/**
 This package used to be the OROMatcher library and provides both
 generic regular expression interfaces and Perl5 regular expression
 compatible implementation classes.
@@ -132,5 +131,5 @@ a "?" right after the quantifier.
 </ul>
 
 
-</body>
-
+*/
+package org.apache.oro.text.regex;

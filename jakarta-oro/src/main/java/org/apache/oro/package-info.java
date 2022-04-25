@@ -1,5 +1,4 @@
-<!-- $Id: overview.html,v 1.1.1.1 2000/07/23 23:08:48 jon Exp $ -->
-<body>
+/**
 The Jakarta-ORO library contains packages for performing general text
 processing in Java, with an aim to support, though not specifically
 limited to, servlet development.  The core package is
@@ -7,4 +6,5 @@ limited to, servlet development.  The core package is
 manipulating regular expressions, as well as a set of Perl5 comptabile
 regular expression classes.  Developers will mostly be interested only
 in that package.
-</body>
+*/
+package org.apache.oro;
