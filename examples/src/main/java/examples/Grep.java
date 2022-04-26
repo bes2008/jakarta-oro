@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,11 +58,13 @@
 
 package examples;
 
-import java.io.*;
-import java.util.*;
+import org.apache.oro.text.MatchAction;
+import org.apache.oro.text.MatchActionInfo;
+import org.apache.oro.text.MatchActionProcessor;
+import org.apache.oro.text.regex.MalformedPatternException;
 
-import org.apache.oro.text.*;
-import org.apache.oro.text.regex.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * This is a no-frills implementation of grep using Perl regular expressions.
@@ -73,46 +75,46 @@ import org.apache.oro.text.regex.*;
  * @version @version@
  */
 public final class Grep {
-  static int _file = 0;
+    static int _file = 0;
 
-  // args[] is declared final so that Inner Class may reference it.
-  public static final void main(final String[] args) {
-    MatchActionProcessor processor = new MatchActionProcessor();
+    // args[] is declared final so that Inner Class may reference it.
+    public static final void main(final String[] args) {
+        MatchActionProcessor processor = new MatchActionProcessor();
 
-    if(args.length < 2) {
-      System.err.println("Usage: grep <pattern> <filename>");
-      System.exit(1);
+        if (args.length < 2) {
+            System.err.println("Usage: grep <pattern> <filename>");
+            System.exit(1);
+        }
+
+        try {
+            if (args.length > 2) {
+                // Print filename before line if more than one file is specified.
+                // Rely on _file to point to current file being processed.
+                processor.addAction(args[0], new MatchAction() {
+                    public void processMatch(MatchActionInfo info) {
+                        info.output.println(args[_file] + ":" + info.line);
+                    }
+                });
+            } else {
+                // We rely on the default action of printing matched
+                // lines to the given OutputStream
+                processor.addAction(args[0]);
+            }
+        } catch (MalformedPatternException e) {
+            System.err.println("Bad pattern.");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        for (_file = 1; _file < args.length; _file++) {
+            try {
+                processor.processMatches(new FileInputStream(args[_file]), System.out);
+            } catch (IOException e) {
+                System.err.println("Error opening or reading " + args[_file]);
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
     }
-
-    try {
-      if(args.length > 2) {
-	// Print filename before line if more than one file is specified.
-	// Rely on _file to point to current file being processed.
-	processor.addAction(args[0], new MatchAction() {
-	  public void processMatch(MatchActionInfo info) {
-	    info.output.println(args[_file] + ":" + info.line);
-	  }
-	});
-      } else {
-	// We rely on the default action of printing matched 
-	// lines to the given OutputStream
-	processor.addAction(args[0]);
-      }
-    } catch(MalformedPatternException e) {
-      System.err.println("Bad pattern.");
-      e.printStackTrace();
-      System.exit(1);
-    }
-
-    for(_file = 1; _file < args.length; _file++) {
-      try {
-	processor.processMatches(new FileInputStream(args[_file]), System.out);
-      } catch(IOException e) {
-	System.err.println("Error opening or reading " + args[_file]);
-	e.printStackTrace();
-	System.exit(1);
-      }
-    }
-  }
 
 }

@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,11 +58,13 @@
 
 package examples;
 
-import java.io.*;
-import java.util.*;
+import org.apache.oro.io.AwkFilenameFilter;
+import org.apache.oro.io.GlobFilenameFilter;
+import org.apache.oro.io.Perl5FilenameFilter;
+import org.apache.oro.text.GlobCompiler;
 
-import org.apache.oro.io.*;
-import org.apache.oro.text.*;
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * This is a sample program demonstrating how to use the regular expression
@@ -72,34 +74,34 @@ import org.apache.oro.text.*;
  */
 public final class Filter {
 
-  public static void printList(String[] list) {
-    System.out.println();
-    for(int i=0; i < list.length; i++)
-      System.out.println(list[i]);
-    System.out.println();
-  }
+    public static void printList(String[] list) {
+        System.out.println();
+        for (int i = 0; i < list.length; i++)
+            System.out.println(list[i]);
+        System.out.println();
+    }
 
-  public static final void main(String[] args) {
-    File dir;
-    FilenameFilter filter;
+    public static final void main(String[] args) {
+        File dir;
+        FilenameFilter filter;
 
-    dir = new File(System.getProperty("user.dir"));
+        dir = new File(System.getProperty("user.dir"));
 
-    // List all files ending in .java
-    filter = new GlobFilenameFilter("*.java",
-			    GlobCompiler.STAR_CANNOT_MATCH_NULL_MASK);
-    System.out.println("Glob: *.java");
-    printList(dir.list(filter));
+        // List all files ending in .java
+        filter = new GlobFilenameFilter("*.java",
+                GlobCompiler.STAR_CANNOT_MATCH_NULL_MASK);
+        System.out.println("Glob: *.java");
+        printList(dir.list(filter));
 
-    // List all files ending in .class
-    filter = new AwkFilenameFilter(".+\\.class");
-    System.out.println("Awk: .+\\.class");
-    printList(dir.list(filter));
+        // List all files ending in .class
+        filter = new AwkFilenameFilter(".+\\.class");
+        System.out.println("Awk: .+\\.class");
+        printList(dir.list(filter));
 
-    // List all files ending in .java or .class
-    filter = new Perl5FilenameFilter(".+\\.(?:java|class)");
-    System.out.println("Perl5: .+\\.(?:java|class)");
-    printList(dir.list(filter));
-  }
+        // List all files ending in .java or .class
+        filter = new Perl5FilenameFilter(".+\\.(?:java|class)");
+        System.out.println("Perl5: .+\\.(?:java|class)");
+        printList(dir.list(filter));
+    }
 
 }

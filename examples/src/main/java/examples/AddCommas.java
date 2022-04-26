@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,10 +58,9 @@
 
 package examples;
 
-import org.apache.oro.text.perl.*;
+import org.apache.oro.text.perl.Perl5Util;
 
 /**
- *
  * This is an example program based on a short example from the Camel book.
  * It demonstrates substitutions by adding commas to a the string
  * representation of an integer.
@@ -70,27 +69,27 @@ import org.apache.oro.text.perl.*;
  */
 public final class AddCommas {
 
-  /**
-   * This program takes a string as an argument and adds commas to all the
-   * integers in the string exceeding 3 digits in length, placing each comma
-   * three digits apart.
-   */
-  public static final void main(String args[]) {
-    String number;
-    Perl5Util perl;
+    /**
+     * This program takes a string as an argument and adds commas to all the
+     * integers in the string exceeding 3 digits in length, placing each comma
+     * three digits apart.
+     */
+    public static final void main(String args[]) {
+        String number;
+        Perl5Util perl;
 
-    if(args.length < 1) {
-      System.err.println("Usage: addCommas integer");
-      System.exit(1);
+        if (args.length < 1) {
+            System.err.println("Usage: addCommas integer");
+            System.exit(1);
+        }
+
+        number = args[0];
+        perl = new Perl5Util();
+
+        while (perl.match("/[+-]?\\d*\\d{4}/", number))
+            number = perl.substitute("s/([+-]?\\d*\\d)(\\d{3})/$1,$2/", number);
+
+        System.out.println(number);
     }
-
-    number = args[0];
-    perl = new Perl5Util();
-
-    while(perl.match("/[+-]?\\d*\\d{4}/", number))
-      number = perl.substitute("s/([+-]?\\d*\\d)(\\d{3})/$1,$2/", number);
-
-    System.out.println(number);
-  }
 
 }

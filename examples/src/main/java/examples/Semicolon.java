@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,10 +58,13 @@
 
 package examples;
 
-import java.io.*;
+import org.apache.oro.text.MatchAction;
+import org.apache.oro.text.MatchActionInfo;
+import org.apache.oro.text.MatchActionProcessor;
+import org.apache.oro.text.regex.MalformedPatternException;
 
-import org.apache.oro.text.*;
-import org.apache.oro.text.regex.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * This is a simple example program showing how to use the MatchActionProcessor
@@ -72,30 +75,30 @@ import org.apache.oro.text.regex.*;
  */
 public final class Semicolon {
 
-  public static final void main(String[] args) {
-    MatchActionProcessor processor = new MatchActionProcessor();
+    public static final void main(String[] args) {
+        MatchActionProcessor processor = new MatchActionProcessor();
 
-    try {
-      processor.setFieldSeparator(";");
-      // Using a null pattern means to perform the action for every line.
-      processor.addAction(null, new MatchAction() {
-	public void processMatch(MatchActionInfo info) {
-	  // We assume the second column exists
-	  info.output.println(info.fields.get(1));
-	}
-      });
-    } catch(MalformedPatternException e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
+        try {
+            processor.setFieldSeparator(";");
+            // Using a null pattern means to perform the action for every line.
+            processor.addAction(null, new MatchAction() {
+                public void processMatch(MatchActionInfo info) {
+                    // We assume the second column exists
+                    info.output.println(info.fields.get(1));
+                }
+            });
+        } catch (MalformedPatternException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
 
-    try {
-      processor.processMatches(new FileInputStream("semicolon.txt"),
-			       System.out);
-    } catch(IOException e) {
-      e.printStackTrace();
-      System.exit(1);
+        try {
+            processor.processMatches(new FileInputStream("semicolon.txt"),
+                    System.out);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
-  }
 
 }

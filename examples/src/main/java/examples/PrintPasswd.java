@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,10 +58,13 @@
 
 package examples;
 
-import java.io.*;
-import java.util.*;
+import org.apache.oro.text.perl.Perl5Util;
 
-import org.apache.oro.text.perl.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * This is an example program based on a short example from the Camel book.
@@ -71,62 +74,62 @@ import org.apache.oro.text.perl.*;
  * @version @version@
  */
 public final class PrintPasswd {
-  public static final String[] fieldNames = {
-    "Login: ", "Encrypted password: ", "UID: ", "GID: ", "Name: ",
-    "Home: ", "Shell: "
-  };
+    public static final String[] fieldNames = {
+            "Login: ", "Encrypted password: ", "UID: ", "GID: ", "Name: ",
+            "Home: ", "Shell: "
+    };
 
-  public static final void main(String args[]) {
-    BufferedReader input = null;
-    int field, record;
-    String line;
-    Perl5Util perl;
-    ArrayList fields;
-    Iterator it;
+    public static final void main(String args[]) {
+        BufferedReader input = null;
+        int field, record;
+        String line;
+        Perl5Util perl;
+        ArrayList fields;
+        Iterator it;
 
-    try {
-      input = new BufferedReader(new FileReader("/etc/passwd"));
-    } catch(IOException e) {
-      System.err.println("Could not open /etc/passwd.");
-      e.printStackTrace();
-      System.exit(1);
+        try {
+            input = new BufferedReader(new FileReader("/etc/passwd"));
+        } catch (IOException e) {
+            System.err.println("Could not open /etc/passwd.");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        perl = new Perl5Util();
+        record = 0;
+
+        try {
+            fields = new ArrayList();
+
+            while ((line = input.readLine()) != null) {
+                fields.clear();
+                perl.split(fields, "/:/", line);
+
+                it = fields.iterator();
+                field = 0;
+
+                System.out.println("Record " + record++);
+
+                while (it.hasNext() && field < fieldNames.length)
+                    System.out.println(fieldNames[field++] +
+                            (String) it.next());
+
+                System.out.print("\n\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading /etc/passwd.");
+            e.printStackTrace();
+            System.exit(1);
+        } finally {
+            try {
+                input.close();
+            } catch (IOException e) {
+                System.err.println("Could not close /etc/passwd.");
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+
     }
-
-    perl = new Perl5Util();
-    record = 0;
-
-    try {
-      fields = new ArrayList();
-
-      while((line = input.readLine()) != null) {
-	fields.clear();
-	perl.split(fields, "/:/", line);
-
-	it = fields.iterator();
-	field = 0;
-
-	System.out.println("Record " + record++); 
-
-	while(it.hasNext() && field < fieldNames.length)
-	  System.out.println(fieldNames[field++] + 
-			     (String)it.next());
-
-	System.out.print("\n\n");
-      }
-    } catch(IOException e) {
-      System.err.println("Error reading /etc/passwd.");
-      e.printStackTrace();
-      System.exit(1);
-    } finally {
-      try {
-	input.close();
-      } catch(IOException e) {
-	System.err.println("Could not close /etc/passwd.");
-	e.printStackTrace();
-	System.exit(1);
-      }
-    }
-
-  }
 
 }

@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,8 +58,8 @@
 
 package examples;
 
-import org.apache.oro.text.regex.*;
-import org.apache.oro.text.perl.*;
+import org.apache.oro.text.perl.MalformedPerl5PatternException;
+import org.apache.oro.text.perl.Perl5Util;
 
 /**
  * This is a trivial example program demonstrating the preMatch()
@@ -69,38 +69,38 @@ import org.apache.oro.text.perl.*;
  */
 public final class DidNotMatch {
 
-  /**
-   * This program takes a Perl5 pattern and an input string as arguments.
-   * It prints the parts of the input surrounding the first occurrence
-   * of the pattern in the input.
-   */
-  public static final void main(String args[]) {
-    String pattern, input;
-    Perl5Util perl;
+    /**
+     * This program takes a Perl5 pattern and an input string as arguments.
+     * It prints the parts of the input surrounding the first occurrence
+     * of the pattern in the input.
+     */
+    public static final void main(String args[]) {
+        String pattern, input;
+        Perl5Util perl;
 
-    if(args.length < 2) {
-      System.err.println("Usage: didNotMatch pattern input");
-      System.exit(1);
+        if (args.length < 2) {
+            System.err.println("Usage: didNotMatch pattern input");
+            System.exit(1);
+        }
+
+        pattern = args[0];
+        input = args[1];
+        perl = new Perl5Util();
+
+        // Use a try block because we have no idea if the user will enter a valid
+        // pattern.
+        try {
+            if (perl.match(pattern, input)) {
+                System.out.println("Pre : " + perl.preMatch());
+                System.out.println("Post: " + perl.postMatch());
+            } else
+                System.err.println("There was no match.");
+        } catch (MalformedPerl5PatternException e) {
+            System.err.println("You entered an invalid pattern.");
+            System.err.println("Error: " + e.getMessage());
+            System.exit(1);
+        }
+
     }
-
-    pattern = args[0];
-    input   = args[1];
-    perl    = new Perl5Util();
-
-    // Use a try block because we have no idea if the user will enter a valid
-    // pattern.
-    try {
-      if(perl.match(pattern, input)) {
-	System.out.println("Pre : " + perl.preMatch());
-	System.out.println("Post: " + perl.postMatch());
-      } else
-	System.err.println("There was no match.");
-    } catch(MalformedPerl5PatternException e) {
-      System.err.println("You entered an invalid pattern.");
-      System.err.println("Error: " + e.getMessage());
-      System.exit(1);
-    }
-
-  }
 
 }
