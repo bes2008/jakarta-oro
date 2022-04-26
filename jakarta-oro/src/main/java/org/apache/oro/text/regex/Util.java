@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,7 +58,8 @@
 
 package org.apache.oro.text.regex;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Vector;
 
 /**
  * The Util class is a holder for useful static utility methods that can
@@ -87,379 +88,380 @@ import java.util.*;
  * </ol>
  *
  * @version @version@
- * @since 1.0
  * @see Pattern
  * @see PatternMatcher
+ * @since 1.0
  */
 public final class Util {
-  /**
-   * A constant passed to the {@link #substitute substitute()}
-   * methods indicating that all occurrences of a pattern should be 
-   * substituted.
-   */
-  public static final int SUBSTITUTE_ALL = -1;
+    /**
+     * A constant passed to the {@link #substitute substitute()}
+     * methods indicating that all occurrences of a pattern should be
+     * substituted.
+     */
+    public static final int SUBSTITUTE_ALL = -1;
 
-  /**
-   * A constant passed to the {@link #split split()} methods
-   * indicating that all occurrences of a pattern should be used to
-   * split a string.
-   */
-  public static final int SPLIT_ALL = 0;
+    /**
+     * A constant passed to the {@link #split split()} methods
+     * indicating that all occurrences of a pattern should be used to
+     * split a string.
+     */
+    public static final int SPLIT_ALL = 0;
 
-  /**
-   * The default destructor for the Util class.  It is made private
-   * to prevent the instantiation of the class.
-   */
-  private Util() { }
-
-
-  /**
-   * Splits up a <code>String</code> instance and stores results as a
-   * <code>List</code> of substrings numbering no more than a specified
-   * limit.  The string is split with a regular expression as the delimiter. 
-   * The <b>limit</b> parameter essentially says to split the
-   * string only on at most the first <b>limit - 1</b> number of pattern
-   * occurences.
-   * <p>
-   * This method is inspired by the Perl split() function and behaves 
-   * identically to it when used in conjunction with the Perl5Matcher and
-   * Perl5Pattern classes except for the following difference:
-   * <ul><p>
-   * In Perl, if the split expression contains parentheses, the split()
-   * method creates additional list elements from each of the matching
-   * subgroups in the pattern.  In other words:
-   * <ul><p>
-   * <code>split(list, "/([,-])/", "8-12,15,18", Util.SPLIT_ALL)</code></ul>
-   * <p> produces the list containing:
-   * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
-   * <p> The OROMatcher split method does not follow this behavior.  The
-   * following list would be produced by OROMatcher:
-   * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
-   * <p> To obtain the Perl behavior, use
-   * {@link org.apache.oro.text.perl.Perl5Util#split}.
-   * </ul>
-   * <p>
-   * @param results A Collection to which the split results are appended.
-   *         After the method returns, it contains the substrings of the input
-   *         that occur between the regular expression delimiter occurences.
-   *         The input will not be split into any more substrings than the
-   *         specified <code>limit</code>.  A way of thinking of this is that
-   *         only the first <code>limit - 1</code> matches of the delimiting
-   *         regular expression will be used to split the input.
-   * @param matcher The regular expression matcher to execute the split.
-   * @param pattern The regular expression to use as a split delimiter.
-   * @param input   The <code>String</code> to split.
-   * @param limit  The limit on the number of resulting split elements.
-   *               Values <= 0 produce the same behavior as using the
-   *               <b>SPLIT_ALL</b> constant which causes the limit to be 
-   *               ignored and splits to be performed on all occurrences of
-   *               the pattern.  You should use the <b>SPLIT_ALL</b> constant
-   *               to achieve this behavior instead of relying on the default
-   *               behavior associated with non-positive limit values.
-   * @since 2.0
-   */
-  public static void split(Collection results, PatternMatcher matcher,
-			   Pattern pattern, String input, int limit)
-  {
-    int beginOffset;
-    MatchResult currentResult;
-    PatternMatcherInput pinput;
-
-    pinput = new PatternMatcherInput(input);
-    beginOffset = 0;
-
-    while(--limit != 0 && matcher.contains(pinput, pattern)) {
-      currentResult = matcher.getMatch();
-      results.add(input.substring(beginOffset,
-				  currentResult.beginOffset(0)));
-      beginOffset = currentResult.endOffset(0);
+    /**
+     * The default destructor for the Util class.  It is made private
+     * to prevent the instantiation of the class.
+     */
+    private Util() {
     }
 
-    results.add(input.substring(beginOffset, input.length()));
-  }
 
+    /**
+     * Splits up a <code>String</code> instance and stores results as a
+     * <code>List</code> of substrings numbering no more than a specified
+     * limit.  The string is split with a regular expression as the delimiter.
+     * The <b>limit</b> parameter essentially says to split the
+     * string only on at most the first <b>limit - 1</b> number of pattern
+     * occurences.
+     * <p>
+     * This method is inspired by the Perl split() function and behaves
+     * identically to it when used in conjunction with the Perl5Matcher and
+     * Perl5Pattern classes except for the following difference:
+     * <ul><p>
+     * In Perl, if the split expression contains parentheses, the split()
+     * method creates additional list elements from each of the matching
+     * subgroups in the pattern.  In other words:
+     * <ul><p>
+     * <code>split(list, "/([,-])/", "8-12,15,18", Util.SPLIT_ALL)</code></ul>
+     * <p> produces the list containing:
+     * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+     * <p> The OROMatcher split method does not follow this behavior.  The
+     * following list would be produced by OROMatcher:
+     * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
+     * <p> To obtain the Perl behavior, use
+     * {@link org.apache.oro.text.perl.Perl5Util#split}.
+     * </ul>
+     * <p>
+     *
+     * @param results A Collection to which the split results are appended.
+     *                After the method returns, it contains the substrings of the input
+     *                that occur between the regular expression delimiter occurences.
+     *                The input will not be split into any more substrings than the
+     *                specified <code>limit</code>.  A way of thinking of this is that
+     *                only the first <code>limit - 1</code> matches of the delimiting
+     *                regular expression will be used to split the input.
+     * @param matcher The regular expression matcher to execute the split.
+     * @param pattern The regular expression to use as a split delimiter.
+     * @param input   The <code>String</code> to split.
+     * @param limit   The limit on the number of resulting split elements.
+     *                Values <= 0 produce the same behavior as using the
+     *                <b>SPLIT_ALL</b> constant which causes the limit to be
+     *                ignored and splits to be performed on all occurrences of
+     *                the pattern.  You should use the <b>SPLIT_ALL</b> constant
+     *                to achieve this behavior instead of relying on the default
+     *                behavior associated with non-positive limit values.
+     * @since 2.0
+     */
+    public static void split(Collection results, PatternMatcher matcher,
+                             Pattern pattern, String input, int limit) {
+        int beginOffset;
+        MatchResult currentResult;
+        PatternMatcherInput pinput;
 
-  /**
-   * Splits up a <code>String</code> instance and stores results as a
-   * <code>Collection</code> of all its substrings using a regular expression
-   * as the delimiter.
-   * This method is inspired by the Perl split() function and behaves 
-   * identically to it when used in conjunction with the Perl5Matcher and
-   * Perl5Pattern classes except for the following difference:
-   * <p>
-   * <ul>
-   * In Perl, if the split expression contains parentheses, the split()
-   * method creates additional list elements from each of the matching
-   * subgroups in the pattern.  In other words:
-   * <ul><p><code>split(list, "/([,-])/", "8-12,15,18")</code></ul>
-   * <p> produces the list containing: 
-   * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
-   * <p> The OROMatcher split method does not follow this behavior.  The
-   * following list would be produced by OROMatcher:
-   * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
-   * <p> To obtain the Perl behavior, use
-   * {@link org.apache.oro.text.perl.Perl5Util#split}.
-   * </ul>
-   * <p>
-   * This method is identical to calling:
-   * <blockquote><pre>
-   * split(matcher, pattern, input, Util.SPLIT_ALL);
-   * </pre></blockquote>
-   * <p>
-   * @param results A <code>Collection</code> to which all the substrings of
-   *         the input that occur between the regular expression delimiter
-   *         occurences are appended.
-   * @param matcher The regular expression matcher to execute the split.
-   * @param pattern The regular expression to use as a split delimiter.
-   * @param input   The <code>String</code> to split.
-   * @since 2.0
-   */
-  public static void split(Collection results,  PatternMatcher matcher,
-			   Pattern pattern, String input)
-  {
-    split(results, matcher, pattern, input, SPLIT_ALL);
-  }
+        pinput = new PatternMatcherInput(input);
+        beginOffset = 0;
 
-  /**
-   * Splits up a <code>String</code> instance into strings contained in a
-   * <code>Vector</code> of size not greater than a specified limit.  The
-   * string is split with a regular expression as the delimiter. 
-   * The <b>limit</b> parameter essentially says to split the
-   * string only on at most the first <b>limit - 1</b> number of pattern
-   * occurences.
-   * <p>
-   * This method is inspired by the Perl split() function and behaves 
-   * identically to it when used in conjunction with the Perl5Matcher and
-   * Perl5Pattern classes except for the following difference:
-   * <ul><p>
-   * In Perl, if the split expression contains parentheses, the split()
-   * method creates additional list elements from each of the matching
-   * subgroups in the pattern.  In other words:
-   * <ul><p><code>split("/([,-])/", "8-12,15,18")</code></ul>
-   * <p> produces the Vector containing:
-   * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
-   * <p> The OROMatcher split method does not follow this behavior.  The
-   * following Vector would be produced by OROMatcher:
-   * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
-   * <p> To obtain the Perl behavior, use
-   * {@link org.apache.oro.text.perl.Perl5Util#split}.
-   * </ul>
-   * <p>
-   * @deprecated Use 
-   *  {@link #split(Collection, PatternMatcher, Pattern, String, int)} instead.
-   * @param matcher The regular expression matcher to execute the split.
-   * @param pattern The regular expression to use as a split delimiter.
-   * @param input  The <code>String</code> to split.
-   * @param limit  The limit on the size of the returned <code>Vector</code>.
-   *               Values <= 0 produce the same behavior as using the
-   *               <b>SPLIT_ALL</b> constant which causes the limit to be 
-   *               ignored and splits to be performed on all occurrences of
-   *               the pattern.  You should use the <b>SPLIT_ALL</b> constant
-   *               to achieve this behavior instead of relying on the default
-   *               behavior associated with non-positive limit values.
-   * @return A <code>Vector</code> containing the substrings of the input
-   *         that occur between the regular expression delimiter occurences.
-   *         The input will not be split into any more substrings than the
-   *         specified <code>limit</code>.  A way of thinking of this is that
-   *         only the first <code>limit - 1</code> matches of the delimiting
-   *         regular expression will be used to split the input.
-   * @since 1.0
-   */
-  public static Vector split(PatternMatcher matcher, Pattern pattern,
-			     String input, int limit)
-  {
-    Vector results = new Vector(20); 
+        while (--limit != 0 && matcher.contains(pinput, pattern)) {
+            currentResult = matcher.getMatch();
+            results.add(input.substring(beginOffset,
+                    currentResult.beginOffset(0)));
+            beginOffset = currentResult.endOffset(0);
+        }
 
-    split(results, matcher, pattern, input, limit);
-
-    return results;
-  }
-
-
-  /**
-   * Splits up a <code>String</code> instance into a <code>Vector</code>
-   * of all its substrings using a regular expression as the delimiter.
-   * This method is inspired by the Perl split() function and behaves 
-   * identically to it when used in conjunction with the Perl5Matcher and
-   * Perl5Pattern classes except for the following difference:
-   * <p>
-   * <ul>
-   * In Perl, if the split expression contains parentheses, the split()
-   * method creates additional list elements from each of the matching
-   * subgroups in the pattern.  In other words:
-   * <ul><p><code>split("/([,-])/", "8-12,15,18")</code></ul>
-   * <p> produces the Vector containing: 
-   * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
-   * <p> The OROMatcher split method does not follow this behavior.  The
-   * following Vector would be produced by OROMatcher:
-   * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
-   * <p> To obtain the Perl behavior, use
-   * {@link org.apache.oro.text.perl.Perl5Util#split}.
-   * </ul>
-   * <p>
-   * This method is identical to calling:
-   * <blockquote><pre>
-   * split(matcher, pattern, input, Util.SPLIT_ALL);
-   * </pre></blockquote>
-   * <p>
-   * @deprecated Use 
-   * {@link #split(Collection, PatternMatcher, Pattern, String)} instead.
-   * @param matcher The regular expression matcher to execute the split.
-   * @param pattern The regular expression to use as a split delimiter.
-   * @param input   The <code>String</code> to split.
-   * @return A <code>Vector</code> containing all the substrings of the input
-   *         that occur between the regular expression delimiter occurences.
-   * @since 1.0
-   */
-  public static Vector split( PatternMatcher matcher, Pattern pattern,
-			      String input)
-  {
-    return split(matcher, pattern, input, SPLIT_ALL);
-  }
-
-
-  /**
-   * Searches a string for a pattern and replaces the first occurrences
-   * of the pattern with a Substitution up to the number of
-   * substitutions specified by the <b>numSubs</b> parameter.  A 
-   * <b>numSubs</b> value of <b>SUBSTITUTE_ALL</b> will cause all occurrences
-   * of the pattern to be replaced.
-   * <p>
-   * @param matcher The regular expression matcher to execute the pattern
-   *                search.
-   * @param pattern The regular expression to search for and substitute
-   *                occurrences of.
-   * @param sub     The Substitution used to substitute pattern occurences.
-   * @param input   The <code>String</code> on which to perform substitutions.
-   * @param numSubs The number of substitutions to perform.  Only the
-   *                first <b> numSubs </b> patterns encountered are
-   *                substituted.  If you want to substitute all occurences
-   *                set this parameter to <b> SUBSTITUTE_ALL </b>.
-   * @return A String comprising the input string with the substitutions,
-   *         if any, made.  If no substitutions are made, the returned String
-   *         is the original input String.
-   * @since 1.0
-   */
-  public static String substitute(PatternMatcher matcher, Pattern pattern,
-				  Substitution sub, String input, int numSubs)
-  {
-    StringBuffer buffer = new StringBuffer(input.length());
-    PatternMatcherInput pinput = new PatternMatcherInput(input);
-    
-    // Users have indicated that they expect the result to be the
-    // original input string, rather than a copy, if no substitutions
-    // are performed, 
-    if(substitute(buffer, matcher, pattern, sub, pinput, numSubs) != 0)
-      return buffer.toString();
-    return input;
-  }
-
-  /**
-   * Searches a string for a pattern and substitutes only the first
-   * occurence of the pattern.
-   * <p>
-   * This method is identical to calling:
-   * <blockquote><pre>
-   * substitute(matcher, pattern, sub, input, 1);
-   * </pre></blockquote>
-   * <p>
-   * @param matcher The regular expression matcher to execute the pattern
-   *                search.
-   * @param pattern The regular expression to search for and substitute
-   *                occurrences of.
-   * @param sub     The Substitution used to substitute pattern occurences.
-   * @param input   The <code>String</code> on which to perform substitutions.
-   * @return A String comprising the input string with the substitutions,
-   *         if any, made.  If no substitutions are made, the returned String
-   *         is the original input String.
-   * @since 1.0
-   */
-  public static String substitute(PatternMatcher matcher, Pattern pattern,
-				  Substitution sub, String input)
-  {
-    return substitute(matcher, pattern, sub, input, 1);
-  }
-
-  /**
-   * Searches a string for a pattern and replaces the first occurrences
-   * of the pattern with a Substitution up to the number of
-   * substitutions specified by the <b>numSubs</b> parameter.  A 
-   * <b>numSubs</b> value of <b>SUBSTITUTE_ALL</b> will cause all occurrences
-   * of the pattern to be replaced.  The number of substitutions made
-   * is returned.
-   * <p>
-   * @param result  The StringBuffer in which to store the result of the
-   *                substitutions.  The buffer is only appended to.
-   * @param matcher The regular expression matcher to execute the pattern
-   *                search.
-   * @param pattern The regular expression to search for and substitute
-   *                occurrences of.
-   * @param sub     The Substitution used to substitute pattern occurences.
-   * @param input   The input on which to perform substitutions.
-   * @param numSubs The number of substitutions to perform.  Only the
-   *                first <b> numSubs </b> patterns encountered are
-   *                substituted.  If you want to substitute all occurences
-   *                set this parameter to <b> SUBSTITUTE_ALL </b>.
-   * @return The number of substitutions made.
-   * @since 2.0.6
-   */
-  public static int substitute(StringBuffer result,
-			       PatternMatcher matcher, Pattern pattern,
-			       Substitution sub, String input,
-			       int numSubs)
-  {
-    PatternMatcherInput pinput = new PatternMatcherInput(input);
-    return substitute(result, matcher, pattern, sub, pinput, numSubs);
-  }
-
-  /**
-   * Searches a string for a pattern and replaces the first occurrences
-   * of the pattern with a Substitution up to the number of
-   * substitutions specified by the <b>numSubs</b> parameter.  A 
-   * <b>numSubs</b> value of <b>SUBSTITUTE_ALL</b> will cause all occurrences
-   * of the pattern to be replaced.  The number of substitutions made
-   * is returned.
-   * <p>
-   * @param result  The StringBuffer in which to store the result of the
-   *                substitutions.  The buffer is only appended to.
-   * @param matcher The regular expression matcher to execute the pattern
-   *                search.
-   * @param pattern The regular expression to search for and substitute
-   *                occurrences of.
-   * @param sub     The Substitution used to substitute pattern occurences.
-   * @param input   The input on which to perform substitutions.
-   * @param numSubs The number of substitutions to perform.  Only the
-   *                first <b> numSubs </b> patterns encountered are
-   *                substituted.  If you want to substitute all occurences
-   *                set this parameter to <b> SUBSTITUTE_ALL </b>.
-   * @return The number of substitutions made.
-   * @since 2.0.3
-   */
-  public static int substitute(StringBuffer result,
-			       PatternMatcher matcher, Pattern pattern,
-			       Substitution sub, PatternMatcherInput input,
-			       int numSubs)
-  {
-    int beginOffset, subCount;
-    char[] inputBuffer;
-
-    subCount    = 0;
-    beginOffset = input.getBeginOffset(); 
-    inputBuffer = input.getBuffer();
-
-    // Must be != 0 because SUBSTITUTE_ALL is represented by -1.
-    // Do NOT change to numSubs > 0.
-    while(numSubs != 0 && matcher.contains(input, pattern)) {
-      --numSubs;
-      ++subCount;
-      result.append(inputBuffer, beginOffset,
-		    input.getMatchBeginOffset() - beginOffset);
-      sub.appendSubstitution(result, matcher.getMatch(), subCount,
-			     input, matcher, pattern);
-      beginOffset = input.getMatchEndOffset();
+        results.add(input.substring(beginOffset, input.length()));
     }
 
-    result.append(inputBuffer, beginOffset, input.length() - beginOffset);
-    return subCount;
-  }
+
+    /**
+     * Splits up a <code>String</code> instance and stores results as a
+     * <code>Collection</code> of all its substrings using a regular expression
+     * as the delimiter.
+     * This method is inspired by the Perl split() function and behaves
+     * identically to it when used in conjunction with the Perl5Matcher and
+     * Perl5Pattern classes except for the following difference:
+     * <p>
+     * <ul>
+     * In Perl, if the split expression contains parentheses, the split()
+     * method creates additional list elements from each of the matching
+     * subgroups in the pattern.  In other words:
+     * <ul><p><code>split(list, "/([,-])/", "8-12,15,18")</code></ul>
+     * <p> produces the list containing:
+     * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+     * <p> The OROMatcher split method does not follow this behavior.  The
+     * following list would be produced by OROMatcher:
+     * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
+     * <p> To obtain the Perl behavior, use
+     * {@link org.apache.oro.text.perl.Perl5Util#split}.
+     * </ul>
+     * <p>
+     * This method is identical to calling:
+     * <blockquote><pre>
+     * split(matcher, pattern, input, Util.SPLIT_ALL);
+     * </pre></blockquote>
+     * <p>
+     *
+     * @param results A <code>Collection</code> to which all the substrings of
+     *                the input that occur between the regular expression delimiter
+     *                occurences are appended.
+     * @param matcher The regular expression matcher to execute the split.
+     * @param pattern The regular expression to use as a split delimiter.
+     * @param input   The <code>String</code> to split.
+     * @since 2.0
+     */
+    public static void split(Collection results, PatternMatcher matcher,
+                             Pattern pattern, String input) {
+        split(results, matcher, pattern, input, SPLIT_ALL);
+    }
+
+    /**
+     * Splits up a <code>String</code> instance into strings contained in a
+     * <code>Vector</code> of size not greater than a specified limit.  The
+     * string is split with a regular expression as the delimiter.
+     * The <b>limit</b> parameter essentially says to split the
+     * string only on at most the first <b>limit - 1</b> number of pattern
+     * occurences.
+     * <p>
+     * This method is inspired by the Perl split() function and behaves
+     * identically to it when used in conjunction with the Perl5Matcher and
+     * Perl5Pattern classes except for the following difference:
+     * <ul><p>
+     * In Perl, if the split expression contains parentheses, the split()
+     * method creates additional list elements from each of the matching
+     * subgroups in the pattern.  In other words:
+     * <ul><p><code>split("/([,-])/", "8-12,15,18")</code></ul>
+     * <p> produces the Vector containing:
+     * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+     * <p> The OROMatcher split method does not follow this behavior.  The
+     * following Vector would be produced by OROMatcher:
+     * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
+     * <p> To obtain the Perl behavior, use
+     * {@link org.apache.oro.text.perl.Perl5Util#split}.
+     * </ul>
+     * <p>
+     *
+     * @param matcher The regular expression matcher to execute the split.
+     * @param pattern The regular expression to use as a split delimiter.
+     * @param input   The <code>String</code> to split.
+     * @param limit   The limit on the size of the returned <code>Vector</code>.
+     *                Values <= 0 produce the same behavior as using the
+     *                <b>SPLIT_ALL</b> constant which causes the limit to be
+     *                ignored and splits to be performed on all occurrences of
+     *                the pattern.  You should use the <b>SPLIT_ALL</b> constant
+     *                to achieve this behavior instead of relying on the default
+     *                behavior associated with non-positive limit values.
+     * @return A <code>Vector</code> containing the substrings of the input
+     * that occur between the regular expression delimiter occurences.
+     * The input will not be split into any more substrings than the
+     * specified <code>limit</code>.  A way of thinking of this is that
+     * only the first <code>limit - 1</code> matches of the delimiting
+     * regular expression will be used to split the input.
+     * @since 1.0
+     * @deprecated Use
+     * {@link #split(Collection, PatternMatcher, Pattern, String, int)} instead.
+     */
+    public static Vector split(PatternMatcher matcher, Pattern pattern,
+                               String input, int limit) {
+        Vector results = new Vector(20);
+
+        split(results, matcher, pattern, input, limit);
+
+        return results;
+    }
+
+
+    /**
+     * Splits up a <code>String</code> instance into a <code>Vector</code>
+     * of all its substrings using a regular expression as the delimiter.
+     * This method is inspired by the Perl split() function and behaves
+     * identically to it when used in conjunction with the Perl5Matcher and
+     * Perl5Pattern classes except for the following difference:
+     * <p>
+     * <ul>
+     * In Perl, if the split expression contains parentheses, the split()
+     * method creates additional list elements from each of the matching
+     * subgroups in the pattern.  In other words:
+     * <ul><p><code>split("/([,-])/", "8-12,15,18")</code></ul>
+     * <p> produces the Vector containing:
+     * <ul><p><code> { "8", "-", "12", ",", "15", ",", "18" } </code> </ul>
+     * <p> The OROMatcher split method does not follow this behavior.  The
+     * following Vector would be produced by OROMatcher:
+     * <ul><p><code> { "8", "12",  "15", "18" } </code> </ul>
+     * <p> To obtain the Perl behavior, use
+     * {@link org.apache.oro.text.perl.Perl5Util#split}.
+     * </ul>
+     * <p>
+     * This method is identical to calling:
+     * <blockquote><pre>
+     * split(matcher, pattern, input, Util.SPLIT_ALL);
+     * </pre></blockquote>
+     * <p>
+     *
+     * @param matcher The regular expression matcher to execute the split.
+     * @param pattern The regular expression to use as a split delimiter.
+     * @param input   The <code>String</code> to split.
+     * @return A <code>Vector</code> containing all the substrings of the input
+     * that occur between the regular expression delimiter occurences.
+     * @since 1.0
+     * @deprecated Use
+     * {@link #split(Collection, PatternMatcher, Pattern, String)} instead.
+     */
+    public static Vector split(PatternMatcher matcher, Pattern pattern,
+                               String input) {
+        return split(matcher, pattern, input, SPLIT_ALL);
+    }
+
+
+    /**
+     * Searches a string for a pattern and replaces the first occurrences
+     * of the pattern with a Substitution up to the number of
+     * substitutions specified by the <b>numSubs</b> parameter.  A
+     * <b>numSubs</b> value of <b>SUBSTITUTE_ALL</b> will cause all occurrences
+     * of the pattern to be replaced.
+     * <p>
+     *
+     * @param matcher The regular expression matcher to execute the pattern
+     *                search.
+     * @param pattern The regular expression to search for and substitute
+     *                occurrences of.
+     * @param sub     The Substitution used to substitute pattern occurences.
+     * @param input   The <code>String</code> on which to perform substitutions.
+     * @param numSubs The number of substitutions to perform.  Only the
+     *                first <b> numSubs </b> patterns encountered are
+     *                substituted.  If you want to substitute all occurences
+     *                set this parameter to <b> SUBSTITUTE_ALL </b>.
+     * @return A String comprising the input string with the substitutions,
+     * if any, made.  If no substitutions are made, the returned String
+     * is the original input String.
+     * @since 1.0
+     */
+    public static String substitute(PatternMatcher matcher, Pattern pattern,
+                                    Substitution sub, String input, int numSubs) {
+        StringBuffer buffer = new StringBuffer(input.length());
+        PatternMatcherInput pinput = new PatternMatcherInput(input);
+
+        // Users have indicated that they expect the result to be the
+        // original input string, rather than a copy, if no substitutions
+        // are performed,
+        if (substitute(buffer, matcher, pattern, sub, pinput, numSubs) != 0)
+            return buffer.toString();
+        return input;
+    }
+
+    /**
+     * Searches a string for a pattern and substitutes only the first
+     * occurence of the pattern.
+     * <p>
+     * This method is identical to calling:
+     * <blockquote><pre>
+     * substitute(matcher, pattern, sub, input, 1);
+     * </pre></blockquote>
+     * <p>
+     *
+     * @param matcher The regular expression matcher to execute the pattern
+     *                search.
+     * @param pattern The regular expression to search for and substitute
+     *                occurrences of.
+     * @param sub     The Substitution used to substitute pattern occurences.
+     * @param input   The <code>String</code> on which to perform substitutions.
+     * @return A String comprising the input string with the substitutions,
+     * if any, made.  If no substitutions are made, the returned String
+     * is the original input String.
+     * @since 1.0
+     */
+    public static String substitute(PatternMatcher matcher, Pattern pattern,
+                                    Substitution sub, String input) {
+        return substitute(matcher, pattern, sub, input, 1);
+    }
+
+    /**
+     * Searches a string for a pattern and replaces the first occurrences
+     * of the pattern with a Substitution up to the number of
+     * substitutions specified by the <b>numSubs</b> parameter.  A
+     * <b>numSubs</b> value of <b>SUBSTITUTE_ALL</b> will cause all occurrences
+     * of the pattern to be replaced.  The number of substitutions made
+     * is returned.
+     * <p>
+     *
+     * @param result  The StringBuffer in which to store the result of the
+     *                substitutions.  The buffer is only appended to.
+     * @param matcher The regular expression matcher to execute the pattern
+     *                search.
+     * @param pattern The regular expression to search for and substitute
+     *                occurrences of.
+     * @param sub     The Substitution used to substitute pattern occurences.
+     * @param input   The input on which to perform substitutions.
+     * @param numSubs The number of substitutions to perform.  Only the
+     *                first <b> numSubs </b> patterns encountered are
+     *                substituted.  If you want to substitute all occurences
+     *                set this parameter to <b> SUBSTITUTE_ALL </b>.
+     * @return The number of substitutions made.
+     * @since 2.0.6
+     */
+    public static int substitute(StringBuffer result,
+                                 PatternMatcher matcher, Pattern pattern,
+                                 Substitution sub, String input,
+                                 int numSubs) {
+        PatternMatcherInput pinput = new PatternMatcherInput(input);
+        return substitute(result, matcher, pattern, sub, pinput, numSubs);
+    }
+
+    /**
+     * Searches a string for a pattern and replaces the first occurrences
+     * of the pattern with a Substitution up to the number of
+     * substitutions specified by the <b>numSubs</b> parameter.  A
+     * <b>numSubs</b> value of <b>SUBSTITUTE_ALL</b> will cause all occurrences
+     * of the pattern to be replaced.  The number of substitutions made
+     * is returned.
+     * <p>
+     *
+     * @param result  The StringBuffer in which to store the result of the
+     *                substitutions.  The buffer is only appended to.
+     * @param matcher The regular expression matcher to execute the pattern
+     *                search.
+     * @param pattern The regular expression to search for and substitute
+     *                occurrences of.
+     * @param sub     The Substitution used to substitute pattern occurences.
+     * @param input   The input on which to perform substitutions.
+     * @param numSubs The number of substitutions to perform.  Only the
+     *                first <b> numSubs </b> patterns encountered are
+     *                substituted.  If you want to substitute all occurences
+     *                set this parameter to <b> SUBSTITUTE_ALL </b>.
+     * @return The number of substitutions made.
+     * @since 2.0.3
+     */
+    public static int substitute(StringBuffer result,
+                                 PatternMatcher matcher, Pattern pattern,
+                                 Substitution sub, PatternMatcherInput input,
+                                 int numSubs) {
+        int beginOffset, subCount;
+        char[] inputBuffer;
+
+        subCount = 0;
+        beginOffset = input.getBeginOffset();
+        inputBuffer = input.getBuffer();
+
+        // Must be != 0 because SUBSTITUTE_ALL is represented by -1.
+        // Do NOT change to numSubs > 0.
+        while (numSubs != 0 && matcher.contains(input, pattern)) {
+            --numSubs;
+            ++subCount;
+            result.append(inputBuffer, beginOffset,
+                    input.getMatchBeginOffset() - beginOffset);
+            sub.appendSubstitution(result, matcher.getMatch(), subCount,
+                    input, matcher, pattern);
+            beginOffset = input.getMatchEndOffset();
+        }
+
+        result.append(inputBuffer, beginOffset, input.length() - beginOffset);
+        return subCount;
+    }
 }

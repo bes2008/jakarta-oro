@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,8 +58,6 @@
 
 package org.apache.oro.util;
 
-import java.util.*;
-
 /**
  * This class is a GenericCache subclass implementing a FIFO (First
  * In First Out) cache replacement policy.  In other words, values are
@@ -68,78 +66,80 @@ import java.util.*;
  * the current patterns in the cache to have been added.
  *
  * @version @version@
- * @since 1.0
  * @see GenericCache
+ * @since 1.0
  */
 
 public final class CacheFIFO extends GenericCache {
-  private int __curent = 0;
+    private int __curent = 0;
 
-  /**
-   * Creates a CacheFIFO instance with a given cache capacity.
-   * <p>
-   * @param capacity  The capacity of the cache.
-   */
-  public CacheFIFO(int capacity) { 
-    super(capacity);
-  }
-
-
-  /**
-   * Same as:
-   * <blockquote><pre>
-   * CacheFIFO(GenericCache.DEFAULT_CAPACITY);
-   * </pre></blockquote>
-   */
-  public CacheFIFO(){
-    this(GenericCache.DEFAULT_CAPACITY);
-  }
-
-
-  /**
-   * Adds a value to the cache.  If the cache is full, when a new value
-   * is added to the cache, it replaces the first of the current values
-   * in the cache to have been added (i.e., FIFO).
-   * <p>
-   * @param key   The key referencing the value added to the cache.
-   * @param value The value to add to the cache.
-   */
-  public final synchronized void addElement(Object key, Object value) {
-    int index;
-    Object obj;
-
-    obj = _table.get(key);
-
-    if(obj != null) {
-      GenericCacheEntry entry;
-
-      // Just replace the value.  Technically this upsets the FIFO ordering,
-      // but it's expedient.
-      entry = (GenericCacheEntry)obj;
-      entry._value = value;
-      entry._key   = key;
-
-      return;
+    /**
+     * Creates a CacheFIFO instance with a given cache capacity.
+     * <p>
+     *
+     * @param capacity The capacity of the cache.
+     */
+    public CacheFIFO(int capacity) {
+        super(capacity);
     }
 
-    // If we haven't filled the cache yet, put it at the end.
-    if(!isFull()) {
-      index = _numEntries;
-      ++_numEntries;
-    } else {
-      // Otherwise, replace the current pointer, which takes care of
-      // FIFO in a circular fashion.
-      index = __curent;
 
-      if(++__curent >= _cache.length)
-	__curent = 0;
-
-      _table.remove(_cache[index]._key);
+    /**
+     * Same as:
+     * <blockquote><pre>
+     * CacheFIFO(GenericCache.DEFAULT_CAPACITY);
+     * </pre></blockquote>
+     */
+    public CacheFIFO() {
+        this(GenericCache.DEFAULT_CAPACITY);
     }
 
-    _cache[index]._value = value;
-    _cache[index]._key   = key;
-    _table.put(key, _cache[index]);
-  }
+
+    /**
+     * Adds a value to the cache.  If the cache is full, when a new value
+     * is added to the cache, it replaces the first of the current values
+     * in the cache to have been added (i.e., FIFO).
+     * <p>
+     *
+     * @param key   The key referencing the value added to the cache.
+     * @param value The value to add to the cache.
+     */
+    public final synchronized void addElement(Object key, Object value) {
+        int index;
+        Object obj;
+
+        obj = _table.get(key);
+
+        if (obj != null) {
+            GenericCacheEntry entry;
+
+            // Just replace the value.  Technically this upsets the FIFO ordering,
+            // but it's expedient.
+            entry = (GenericCacheEntry) obj;
+            entry._value = value;
+            entry._key = key;
+
+            return;
+        }
+
+        // If we haven't filled the cache yet, put it at the end.
+        if (!isFull()) {
+            index = _numEntries;
+            ++_numEntries;
+        } else {
+            // Otherwise, replace the current pointer, which takes care of
+            // FIFO in a circular fashion.
+            index = __curent;
+
+            if (++__curent >= _cache.length)
+                __curent = 0;
+
+            _table.remove(_cache[index]._key);
+        }
+
+        _cache[index]._value = value;
+        _cache[index]._key = key;
+        _table.put(key, _cache[index]);
+    }
 
 }

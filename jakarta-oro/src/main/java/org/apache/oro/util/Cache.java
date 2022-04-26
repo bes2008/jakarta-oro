@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -67,26 +67,28 @@ package org.apache.oro.util;
  */
 public interface Cache {
 
-  public void addElement(Object key, Object value);
+    public void addElement(Object key, Object value);
 
-  public Object getElement(Object key);
+    public Object getElement(Object key);
 
-  /**
-   * Returns the number of elements in the cache, not to be confused with
-   * the {@link #capacity()} which returns the number
-   * of elements that can be held in the cache at one time.
-   * <p>
-   * @return  The current size of the cache (i.e., the number of elements
-   *          currently cached).
-   */
-  public int size();
+    /**
+     * Returns the number of elements in the cache, not to be confused with
+     * the {@link #capacity()} which returns the number
+     * of elements that can be held in the cache at one time.
+     * <p>
+     *
+     * @return The current size of the cache (i.e., the number of elements
+     * currently cached).
+     */
+    public int size();
 
 
-  /**
-   * Returns the maximum number of elements that can be cached at one time.
-   * <p>
-   * @return The maximum number of elements that can be cached at one time.
-   */
-  public int capacity();
+    /**
+     * Returns the maximum number of elements that can be cached at one time.
+     * <p>
+     *
+     * @return The maximum number of elements that can be cached at one time.
+     */
+    public int capacity();
 
 }

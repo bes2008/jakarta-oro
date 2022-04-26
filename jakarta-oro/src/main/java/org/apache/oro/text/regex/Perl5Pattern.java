@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,7 +58,7 @@
 
 package org.apache.oro.text.regex;
 
-import java.io.*;
+import java.io.Serializable;
 
 /**
  * An implementation of the Pattern interface for Perl5 regular expressions.
@@ -74,35 +74,36 @@ import java.io.*;
  * saved to disk if desired.
  *
  * @version @version@
- * @since 1.0
  * @see Perl5Compiler
  * @see Perl5Matcher
+ * @since 1.0
  */
 public final class Perl5Pattern implements Pattern, Serializable, Cloneable {
-  static final int
-    _OPT_ANCH_BOL  = 0x01,
-    _OPT_ANCH_MBOL = 0x02,
-    _OPT_SKIP      = 0x04,
-    _OPT_IMPLICIT  = 0x08;
-  static final int _OPT_ANCH = (_OPT_ANCH_BOL | _OPT_ANCH_MBOL);
+    static final int
+            _OPT_ANCH_BOL = 0x01,
+            _OPT_ANCH_MBOL = 0x02,
+            _OPT_SKIP = 0x04,
+            _OPT_IMPLICIT = 0x08;
+    static final int _OPT_ANCH = (_OPT_ANCH_BOL | _OPT_ANCH_MBOL);
 
-  String _expression;
-  char[] _program;
-  int _mustUtility;
-  int _back;
-  int _minLength;
-  int _numParentheses;
-  boolean _isCaseInsensitive, _isExpensive;
-  int _startClassOffset;
-  int _anchor;
-  int _options;
-  char[] _mustString, _startString;
+    String _expression;
+    char[] _program;
+    int _mustUtility;
+    int _back;
+    int _minLength;
+    int _numParentheses;
+    boolean _isCaseInsensitive, _isExpensive;
+    int _startClassOffset;
+    int _anchor;
+    int _options;
+    char[] _mustString, _startString;
 
-  /**
-   * A dummy constructor with default visibility to override the default
-   * public constructor that would be created otherwise by the compiler.
-   */
-  Perl5Pattern(){ }
+    /**
+     * A dummy constructor with default visibility to override the default
+     * public constructor that would be created otherwise by the compiler.
+     */
+    Perl5Pattern() {
+    }
 
   /*
   private void readObject(ObjectInputStream stream)
@@ -114,22 +115,28 @@ public final class Perl5Pattern implements Pattern, Serializable, Cloneable {
   }
   */
 
-  /**
-   * This method returns the string representation of the pattern.
-   * <p>
-   * @return The original string representation of the regular expression
-   *         pattern.
-   */
-  public String getPattern() { return _expression; }
+    /**
+     * This method returns the string representation of the pattern.
+     * <p>
+     *
+     * @return The original string representation of the regular expression
+     * pattern.
+     */
+    public String getPattern() {
+        return _expression;
+    }
 
 
-  /**
-   * This method returns an integer containing the compilation options used
-   * to compile this pattern.
-   * <p>
-   * @return The compilation options used to compile the pattern.
-   */
-  public int getOptions()    { return _options; }
+    /**
+     * This method returns an integer containing the compilation options used
+     * to compile this pattern.
+     * <p>
+     *
+     * @return The compilation options used to compile the pattern.
+     */
+    public int getOptions() {
+        return _options;
+    }
 
   /*
   // For testing

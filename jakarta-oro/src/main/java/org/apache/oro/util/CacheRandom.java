@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,7 +58,7 @@
 
 package org.apache.oro.util;
 
-import java.util.*;
+import java.util.Random;
 
 /**
  * This class is a GenericCache subclass implementing a random
@@ -68,72 +68,74 @@ import java.util.*;
  * a randomly selected value in the cache.
  *
  * @version @version@
- * @since 1.0
  * @see GenericCache
+ * @since 1.0
  */
 public final class CacheRandom extends GenericCache {
-  private Random __random;
+    private Random __random;
 
-  /**
-   * Creates a CacheRandom instance with a given cache capacity.
-   * <p>
-   * @param capacity  The capacity of the cache.
-   */
-  public CacheRandom(int capacity) { 
-    super(capacity);
-    __random = new Random(System.currentTimeMillis());
-  }
-
-  /**
-   * Same as:
-   * <blockquote><pre>
-   * CacheRandom(GenericCache.DEFAULT_CAPACITY);
-   * </pre></blockquote>
-   */
-  public CacheRandom(){
-    this(GenericCache.DEFAULT_CAPACITY);
-  }
-
-  /**
-   * Adds a value to the cache.  If the cache is full, when a new value
-   * is added to the cache, it replaces the first of the current values
-   * in the cache to have been added (i.e., Random).
-   * <p>
-   * @param key   The key referencing the value added to the cache.
-   * @param value The value to add to the cache.
-   */
-  public final synchronized void addElement(Object key, Object value) {
-
-    int index;
-    Object obj;
-
-    obj = _table.get(key);
-
-    if(obj != null) {
-      GenericCacheEntry entry;
-
-      // Just replace the value.
-      entry = (GenericCacheEntry)obj;
-      entry._value = value;
-      entry._key   = key;
-
-      return;
+    /**
+     * Creates a CacheRandom instance with a given cache capacity.
+     * <p>
+     *
+     * @param capacity The capacity of the cache.
+     */
+    public CacheRandom(int capacity) {
+        super(capacity);
+        __random = new Random(System.currentTimeMillis());
     }
 
-    // Expression is not in cache.
-
-    // If we haven't filled the cache yet, put it at the end.
-    if(!isFull()) {
-      index = _numEntries;
-      ++_numEntries;
-    } else {
-      // Otherwise, replace a random entry.
-      index = (int)(_cache.length*__random.nextFloat());
-      _table.remove(_cache[index]._key);
+    /**
+     * Same as:
+     * <blockquote><pre>
+     * CacheRandom(GenericCache.DEFAULT_CAPACITY);
+     * </pre></blockquote>
+     */
+    public CacheRandom() {
+        this(GenericCache.DEFAULT_CAPACITY);
     }
 
-    _cache[index]._value = value;
-    _cache[index]._key   = key;
-    _table.put(key, _cache[index]);
-  }
+    /**
+     * Adds a value to the cache.  If the cache is full, when a new value
+     * is added to the cache, it replaces the first of the current values
+     * in the cache to have been added (i.e., Random).
+     * <p>
+     *
+     * @param key   The key referencing the value added to the cache.
+     * @param value The value to add to the cache.
+     */
+    public final synchronized void addElement(Object key, Object value) {
+
+        int index;
+        Object obj;
+
+        obj = _table.get(key);
+
+        if (obj != null) {
+            GenericCacheEntry entry;
+
+            // Just replace the value.
+            entry = (GenericCacheEntry) obj;
+            entry._value = value;
+            entry._key = key;
+
+            return;
+        }
+
+        // Expression is not in cache.
+
+        // If we haven't filled the cache yet, put it at the end.
+        if (!isFull()) {
+            index = _numEntries;
+            ++_numEntries;
+        } else {
+            // Otherwise, replace a random entry.
+            index = (int) (_cache.length * __random.nextFloat());
+            _table.remove(_cache[index]._key);
+        }
+
+        _cache[index]._value = value;
+        _cache[index]._key = key;
+        _table.put(key, _cache[index]);
+    }
 }

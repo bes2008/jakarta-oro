@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,10 +58,9 @@
 
 package org.apache.oro.text;
 
-import java.util.*;
-
-import org.apache.oro.text.regex.*;
-import org.apache.oro.util.*;
+import org.apache.oro.text.regex.PatternCompiler;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.util.CacheRandom;
 
 /**
  * This class is a GenericPatternCache subclass implementing a random
@@ -71,52 +70,53 @@ import org.apache.oro.util.*;
  * a randomly selected pattern in the cache.
  *
  * @version @version@
- * @since 1.0
  * @see GenericPatternCache
+ * @since 1.0
  */
 public final class PatternCacheRandom extends GenericPatternCache {
 
-  /**
-   * Creates a PatternCacheRandom instance with a given cache capacity
-   * and initialized to use a given PatternCompiler instance as a pattern
-   * compiler.
-   * <p>
-   * @param capacity  The capacity of the cache.
-   * @param compiler  The PatternCompiler to use to compile patterns.
-   */
-  public PatternCacheRandom(int capacity, PatternCompiler compiler) {
-    super(new CacheRandom(capacity), compiler);
-  }
+    /**
+     * Creates a PatternCacheRandom instance with a given cache capacity
+     * and initialized to use a given PatternCompiler instance as a pattern
+     * compiler.
+     * <p>
+     *
+     * @param capacity The capacity of the cache.
+     * @param compiler The PatternCompiler to use to compile patterns.
+     */
+    public PatternCacheRandom(int capacity, PatternCompiler compiler) {
+        super(new CacheRandom(capacity), compiler);
+    }
 
-  /**
-   * Same as:
-   * <blockquote><pre>
-   * PatternCacheRandom(GenericPatternCache.DEFAULT_CAPACITY, compiler);
-   * </pre></blockquote>
-   */
-  public PatternCacheRandom(PatternCompiler compiler) {
-    this(GenericPatternCache.DEFAULT_CAPACITY, compiler);
-  }
+    /**
+     * Same as:
+     * <blockquote><pre>
+     * PatternCacheRandom(GenericPatternCache.DEFAULT_CAPACITY, compiler);
+     * </pre></blockquote>
+     */
+    public PatternCacheRandom(PatternCompiler compiler) {
+        this(GenericPatternCache.DEFAULT_CAPACITY, compiler);
+    }
 
-  /**
-   * Same as:
-   * <blockquote><pre>
-   * PatternCacheRandom(capacity, new Perl5Compiler());
-   * </pre></blockquote>
-   */
-  public PatternCacheRandom(int capacity) {
-    this(capacity, new Perl5Compiler());
-  }
+    /**
+     * Same as:
+     * <blockquote><pre>
+     * PatternCacheRandom(capacity, new Perl5Compiler());
+     * </pre></blockquote>
+     */
+    public PatternCacheRandom(int capacity) {
+        this(capacity, new Perl5Compiler());
+    }
 
-  /**
-   * Same as:
-   * <blockquote><pre>
-   * PatternCacheRandom(GenericPatternCache.DEFAULT_CAPACITY);
-   * </pre></blockquote>
-   */
-  public PatternCacheRandom() {
-    this(GenericPatternCache.DEFAULT_CAPACITY);
-  }
+    /**
+     * Same as:
+     * <blockquote><pre>
+     * PatternCacheRandom(GenericPatternCache.DEFAULT_CAPACITY);
+     * </pre></blockquote>
+     */
+    public PatternCacheRandom() {
+        this(GenericPatternCache.DEFAULT_CAPACITY);
+    }
 
 }
 
