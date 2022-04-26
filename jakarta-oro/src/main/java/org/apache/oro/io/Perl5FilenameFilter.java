@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,10 +58,11 @@
 
 package org.apache.oro.io;
 
-import java.io.*;
-
-import org.apache.oro.text.regex.*;
-import org.apache.oro.text.*;
+import org.apache.oro.text.MalformedCachePatternException;
+import org.apache.oro.text.PatternCache;
+import org.apache.oro.text.PatternCacheLRU;
+import org.apache.oro.text.regex.PatternMatcher;
+import org.apache.oro.text.regex.Perl5Matcher;
 
 
 /**
@@ -70,39 +71,44 @@ import org.apache.oro.text.*;
  * which is required to use this class.
  *
  * @version @version@
- * @since 1.0
  * @see RegexFilenameFilter
  * @see AwkFilenameFilter
  * @see GlobFilenameFilter
+ * @since 1.0
  */
 public class Perl5FilenameFilter extends RegexFilenameFilter {
-  private static final PatternMatcher __MATCHER = new Perl5Matcher();
-  private static final PatternCache __CACHE     = new PatternCacheLRU();
+    private static final PatternMatcher __MATCHER = new Perl5Matcher();
+    private static final PatternCache __CACHE = new PatternCacheLRU();
 
-  /**
-   * Construct a filter initialized with the indicated regular expression
-   * and accompanying compilation options conforming to those used by
-   * <code> org.apache.oro.text.regex.Perl5Compiler </code>
-   * <p>
-   * @param regex  The regular expression on which to filter.
-   * @param options A set of compilation options.
-   * @exception MalformedCachePatternException  If there is an error in
-   *     compiling the regular expression.  This need not be caught if
-   *     you are using a hard-coded expression that you know is correct.
-   *     But for robustness and reliability you should catch this exception
-   *     for dynamically entered expressions determined at runtime.
-   */
-  public Perl5FilenameFilter(String regex, int options) {
-    super(__CACHE, __MATCHER, regex, options);
-  }
+    /**
+     * Construct a filter initialized with the indicated regular expression
+     * and accompanying compilation options conforming to those used by
+     * <code> org.apache.oro.text.regex.Perl5Compiler </code>
+     * <p>
+     *
+     * @param regex   The regular expression on which to filter.
+     * @param options A set of compilation options.
+     * @throws MalformedCachePatternException If there is an error in
+     *                                        compiling the regular expression.  This need not be caught if
+     *                                        you are using a hard-coded expression that you know is correct.
+     *                                        But for robustness and reliability you should catch this exception
+     *                                        for dynamically entered expressions determined at runtime.
+     */
+    public Perl5FilenameFilter(String regex, int options) {
+        super(__CACHE, __MATCHER, regex, options);
+    }
 
-  /** Same as Perl5FilenameFilter(regex, Perl5Compiler.DEFAULT_MASK); */
-  public Perl5FilenameFilter(String regex) {
-    super(__CACHE, __MATCHER, regex);
-  }
+    /**
+     * Same as Perl5FilenameFilter(regex, Perl5Compiler.DEFAULT_MASK);
+     */
+    public Perl5FilenameFilter(String regex) {
+        super(__CACHE, __MATCHER, regex);
+    }
 
-  /** Same as Perl5FilenameFilter(""); */
-  public Perl5FilenameFilter() {
-    super(__CACHE, __MATCHER);
-  }
+    /**
+     * Same as Perl5FilenameFilter("");
+     */
+    public Perl5FilenameFilter() {
+        super(__CACHE, __MATCHER);
+    }
 }

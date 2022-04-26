@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -57,11 +57,13 @@
 
 
 package org.apache.oro.text;
- 
-import java.io.*;
-import java.util.*;
 
 import org.apache.oro.text.regex.*;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * The MatchActionProcessor class provides AWK-like line by line filtering
@@ -104,7 +106,7 @@ import org.apache.oro.text.regex.*;
  *      // Using a null pattern means to perform the action for every line.
  *      processor.addAction(null, new MatchAction() {
  *        public void processMatch(MatchActionInfo info) {
- *	    // We assume the second column exists
+ * 	    // We assume the second column exists
  *          info.output.println(info.fields.elementAt(1));
  *        }
  *     });
@@ -120,7 +122,7 @@ import org.apache.oro.text.regex.*;
  *     System.exit(1);
  *   }
  *  }
- *}
+ * }
  * </pre>
  * You can redirect the following sample input to stdin to test the code:
  * <pre>
@@ -134,299 +136,299 @@ import org.apache.oro.text.regex.*;
  * </pre>
  *
  * @version @version@
- * @since 1.0
  * @see MatchAction
  * @see MatchActionInfo
+ * @since 1.0
  */
 public final class MatchActionProcessor {
-  private Pattern __fieldSeparator = null;
-  private PatternCompiler __compiler;
-  private PatternMatcher  __matcher;
-  // If a pattern is null, it means to do it for every line.
-  private Vector __patterns   = new Vector();
-  private Vector __actions    = new Vector();
+    private Pattern __fieldSeparator = null;
+    private PatternCompiler __compiler;
+    private PatternMatcher __matcher;
+    // If a pattern is null, it means to do it for every line.
+    private Vector __patterns = new Vector();
+    private Vector __actions = new Vector();
 
-  private MatchAction __defaultAction = new DefaultMatchAction();
+    private MatchAction __defaultAction = new DefaultMatchAction();
 
-  /**
-   * Creates a new MatchActionProcessor instance initialized with the specified
-   * pattern compiler and matcher.  The field separator is set to null by
-   * default, which means that matched lines will not be split into separate
-   * fields unless the field separator is set with
-   * {@link #setFieldSeparator setFieldSeparator()}.
-   * <p>
-   * @param compiler  The PatternCompiler to use to compile registered
-   *                  patterns.
-   * @param matcher   The PatternMatcher to use when searching for matches.
-   */
-  public MatchActionProcessor(PatternCompiler compiler, PatternMatcher matcher)
-  {
-    __compiler = compiler;
-    __matcher  = matcher;
-  }
-
-  /**
-   * Default constructor for MatchActionProcessor.  Same as calling
-   * <blockquote><code>
-   * MatchActionProcessor(new Perl5Compiler(), new Perl5Matcher());
-   * </code></blockquote>
-   */
-  public MatchActionProcessor() {
-    this(new Perl5Compiler(), new Perl5Matcher());
-  }
-
-
-  /**
-   * Registers a pattern action pair, providing options to be used to
-   * compile the pattern.  If a pattern is null, the action
-   * is performed for every line of input.
-   * <p>
-   * @param pattern  The pattern to bind to an action.
-   * @param options  The compilation options to use for the pattern.
-   * @param action   The action to associate with the pattern.
-   * @exception MalformedPatternException If the pattern cannot be compiled.
-   */
-  public void addAction(String pattern, int options, MatchAction action)
-       throws MalformedPatternException
-  {
-    if(pattern != null)
-      __patterns.addElement(__compiler.compile(pattern, options));
-    else
-      __patterns.addElement(null);
-    __actions.addElement(action);
-  }
-
-  /**
-   * Binds a patten to the default action, providing options to be
-   * used to compile the pattern.  The default action is to simply print
-   * the matched line to the output.  If a pattern is null, the action
-   * is performed for every line of input.
-   * <p>
-   * @param pattern  The pattern to bind to an action.
-   * @param options  The compilation options to use for the pattern.
-   * @exception MalformedPatternException If the pattern cannot be compiled.
-   */
-  public void addAction(String pattern, int options)
-       throws MalformedPatternException
-  {
-    addAction(pattern, options, __defaultAction);
-  }
-
-  /**
-   * Binds a patten to the default action.  The default action is to simply
-   * print the matched line to the output.  If a pattern is null, the action
-   * is performed for every line of input.
-   * <p>
-   * @param pattern  The pattern to bind to an action.
-   * @exception MalformedPatternException If the pattern cannot be compiled.
-   */
-  public void addAction(String pattern) throws MalformedPatternException {
-    addAction(pattern, 0);
-  }
-
-
-  /**
-   * Registers a pattern action pair.  If a pattern is null, the action
-   * is performed for every line of input.
-   * <p>
-   * @param pattern  The pattern to bind to an action.
-   * @param action   The action to associate with the pattern.
-   * @exception MalformedPatternException If the pattern cannot be compiled.
-   */
-  public void addAction(String pattern, MatchAction action)
-       throws MalformedPatternException
-  {
-    addAction(pattern, 0, action);
-  }
-
-  /**
-   * Sets the field separator to use when splitting a line into fields.
-   * If the field separator is never set, or set to null, matched input
-   * lines are not split into fields.
-   * <p>
-   * @param separator  A regular expression defining the field separator.
-   * @param options    The options to use when compiling the separator.
-   * @exception MalformedPatternException If the separator cannot be compiled.
-   */
-  public void setFieldSeparator(String separator, int options)
-       throws MalformedPatternException
-  { 
-    if(separator == null) {
-      __fieldSeparator = null;
-      return;
-    }
-    __fieldSeparator = __compiler.compile(separator, options);
-  }
-
-
-  /**
-   * Sets the field separator to use when splitting a line into fields.
-   * If the field separator is never set, or set to null, matched input
-   * lines are not split into fields.
-   * <p>
-   * @param separator  A regular expression defining the field separator.
-   * @exception MalformedPatternException If the separator cannot be compiled.
-   */
-  public void setFieldSeparator(String separator)
-       throws MalformedPatternException
-  {
-    setFieldSeparator(separator, 0);
-  }
-
-
-  /**
-   * This method reads the provided input one line at a time and for
-   * every registered pattern that is contained in the line it executes
-   * the associated MatchAction's processMatch() method.  If a field
-   * separator has been defined with
-   * {@link #setFieldSeparator setFieldSeparator()}, the
-   * fields member of the MatchActionInfo instance passed to the
-   * processMatch() method is set to a Vector of Strings containing
-   * the split fields of the line.  Otherwise the fields member is set
-   * to null.  If no match was performed to invoke the action (i.e.,
-   * a null pattern was registered), then the match member is set
-   * to null.  Otherwise, the match member will contain the result of
-   * the match.
-   * <p>
-   * The input stream, having been exhausted, is closed right before the
-   * method terminates and the output stream is flushed.
-   * <p>
-   * @see MatchActionInfo
-   * @param input  The input stream from which to read lines.
-   * @param output Where to send output.
-   * @param encoding The character encoding of the InputStream source.
-   *           If you also want to define an output character encoding,
-   *           you should use {@link #processMatches(Reader, Writer)}
-   *           and specify the encodings when creating the Reader and
-   *           Writer sources and sinks.
-   * @exception IOException  If an error occurs while reading input
-   *            or writing output.
-   */
-  public void processMatches(InputStream input, OutputStream output,
-			     String encoding)
-    throws IOException
-  {
-    processMatches(new InputStreamReader(input, encoding),
-		   new OutputStreamWriter(output));
-  }
-
-
-  /**
-   * This method reads the provided input one line at a time using the
-   * platform standart character encoding and for every registered
-   * pattern that is contained in the line it executes the associated
-   * MatchAction's processMatch() method.  If a field separator has been
-   * defined with {@link #setFieldSeparator setFieldSeparator()}, the
-   * fields member of the MatchActionInfo instance passed to the
-   * processMatch() method is set to a Vector of Strings containing
-   * the split fields of the line.  Otherwise the fields member is set
-   * to null.  If no match was performed to invoke the action (i.e.,
-   * a null pattern was registered), then the match member is set
-   * to null.  Otherwise, the match member will contain the result of
-   * the match.
-   *
-   * <p>
-   * The input stream, having been exhausted, is closed right before the
-   * method terminates and the output stream is flushed.
-   * <p>
-   *
-   * @see MatchActionInfo
-   * @param input  The input stream from which to read lines.
-   * @param output Where to send output.
-   * @exception IOException  If an error occurs while reading input
-   *            or writing output.
-   */
-  public void processMatches(InputStream input, OutputStream output)
-    throws IOException
-  {
-    processMatches(new InputStreamReader(input),
-		   new OutputStreamWriter(output));
-  }
-
-  /**
-   * This method reads the provided input one line at a time and for
-   * every registered pattern that is contained in the line it executes
-   * the associated MatchAction's processMatch() method.  If a field
-   * separator has been defined with
-   * {@link #setFieldSeparator setFieldSeparator()}, the
-   * fields member of the MatchActionInfo instance passed to the
-   * processMatch() method is set to a Vector of Strings containing
-   * the split fields of the line.  Otherwise the fields member is set
-   * to null.  If no match was performed to invoke the action (i.e.,
-   * a null pattern was registered), then the match member is set
-   * to null.  Otherwise, the match member will contain the result of
-   * the match.
-   * <p>
-   * The input stream, having been exhausted, is closed right before the
-   * method terminates and the output stream is flushed.
-   * <p>
-   * @see MatchActionInfo
-   * @param input  The input stream from which to read lines.
-   * @param output Where to send output.
-   * @exception IOException  If an error occurs while reading input
-   *            or writing output.
-   */
-  public void processMatches(Reader input, Writer output)
-    throws IOException
-  {
-    int patternCount, current;
-    LineNumberReader reader = new LineNumberReader(input);
-    PrintWriter writer    = new PrintWriter(output);
-    MatchActionInfo info  = new MatchActionInfo();
-    Object obj;
-    Pattern pattern;
-    MatchAction action;
-    List fields = new ArrayList();
-
-    // Set those things that will not change.
-    info.matcher        = __matcher;
-    info.fieldSeparator = __fieldSeparator;
-    info.input          = reader;
-    info.output         = writer;
-    info.fields         = null;
-    patternCount        = __patterns.size();
-
-    info.lineNumber     = 0;
-
-    while((info.line = reader.readLine()) != null) {
-      info.charLine = info.line.toCharArray();
-      for(current=0; current < patternCount; current++) {
-	obj     = __patterns.elementAt(current);
-	// If a pattern is null, it means to do it for every line.
-	if(obj != null) {
-	  pattern = (Pattern)__patterns.elementAt(current);
-	  if(__matcher.contains(info.charLine, pattern)) {
-	    info.match = __matcher.getMatch();
-	    info.lineNumber = reader.getLineNumber();
-	    info.pattern    = pattern;
-	    if(__fieldSeparator != null) {
-	      fields.clear();
-	      Util.split(fields, __matcher, __fieldSeparator, info.line);
-	      info.fields = fields;
-	    } else
-	      info.fields = null;
-	    action = (MatchAction)__actions.elementAt(current);
-	    action.processMatch(info);
-	  }
-	} else {
-	  info.match      = null;
-	  info.lineNumber = reader.getLineNumber();
-	  if(__fieldSeparator != null) {
-	    fields.clear();
-	    Util.split(fields, __matcher, __fieldSeparator, info.line);
-	    info.fields = fields;
-	  } else
-	    info.fields = null;
-	  action = (MatchAction)__actions.elementAt(current);
-	  action.processMatch(info);
-	}
-      }
+    /**
+     * Creates a new MatchActionProcessor instance initialized with the specified
+     * pattern compiler and matcher.  The field separator is set to null by
+     * default, which means that matched lines will not be split into separate
+     * fields unless the field separator is set with
+     * {@link #setFieldSeparator setFieldSeparator()}.
+     * <p>
+     *
+     * @param compiler The PatternCompiler to use to compile registered
+     *                 patterns.
+     * @param matcher  The PatternMatcher to use when searching for matches.
+     */
+    public MatchActionProcessor(PatternCompiler compiler, PatternMatcher matcher) {
+        __compiler = compiler;
+        __matcher = matcher;
     }
 
-    // Flush output but don't close, close input since we reached end.
-    writer.flush();
-    reader.close();
-  }
+    /**
+     * Default constructor for MatchActionProcessor.  Same as calling
+     * <blockquote><code>
+     * MatchActionProcessor(new Perl5Compiler(), new Perl5Matcher());
+     * </code></blockquote>
+     */
+    public MatchActionProcessor() {
+        this(new Perl5Compiler(), new Perl5Matcher());
+    }
+
+
+    /**
+     * Registers a pattern action pair, providing options to be used to
+     * compile the pattern.  If a pattern is null, the action
+     * is performed for every line of input.
+     * <p>
+     *
+     * @param pattern The pattern to bind to an action.
+     * @param options The compilation options to use for the pattern.
+     * @param action  The action to associate with the pattern.
+     * @throws MalformedPatternException If the pattern cannot be compiled.
+     */
+    public void addAction(String pattern, int options, MatchAction action)
+            throws MalformedPatternException {
+        if (pattern != null)
+            __patterns.addElement(__compiler.compile(pattern, options));
+        else
+            __patterns.addElement(null);
+        __actions.addElement(action);
+    }
+
+    /**
+     * Binds a patten to the default action, providing options to be
+     * used to compile the pattern.  The default action is to simply print
+     * the matched line to the output.  If a pattern is null, the action
+     * is performed for every line of input.
+     * <p>
+     *
+     * @param pattern The pattern to bind to an action.
+     * @param options The compilation options to use for the pattern.
+     * @throws MalformedPatternException If the pattern cannot be compiled.
+     */
+    public void addAction(String pattern, int options)
+            throws MalformedPatternException {
+        addAction(pattern, options, __defaultAction);
+    }
+
+    /**
+     * Binds a patten to the default action.  The default action is to simply
+     * print the matched line to the output.  If a pattern is null, the action
+     * is performed for every line of input.
+     * <p>
+     *
+     * @param pattern The pattern to bind to an action.
+     * @throws MalformedPatternException If the pattern cannot be compiled.
+     */
+    public void addAction(String pattern) throws MalformedPatternException {
+        addAction(pattern, 0);
+    }
+
+
+    /**
+     * Registers a pattern action pair.  If a pattern is null, the action
+     * is performed for every line of input.
+     * <p>
+     *
+     * @param pattern The pattern to bind to an action.
+     * @param action  The action to associate with the pattern.
+     * @throws MalformedPatternException If the pattern cannot be compiled.
+     */
+    public void addAction(String pattern, MatchAction action)
+            throws MalformedPatternException {
+        addAction(pattern, 0, action);
+    }
+
+    /**
+     * Sets the field separator to use when splitting a line into fields.
+     * If the field separator is never set, or set to null, matched input
+     * lines are not split into fields.
+     * <p>
+     *
+     * @param separator A regular expression defining the field separator.
+     * @param options   The options to use when compiling the separator.
+     * @throws MalformedPatternException If the separator cannot be compiled.
+     */
+    public void setFieldSeparator(String separator, int options)
+            throws MalformedPatternException {
+        if (separator == null) {
+            __fieldSeparator = null;
+            return;
+        }
+        __fieldSeparator = __compiler.compile(separator, options);
+    }
+
+
+    /**
+     * Sets the field separator to use when splitting a line into fields.
+     * If the field separator is never set, or set to null, matched input
+     * lines are not split into fields.
+     * <p>
+     *
+     * @param separator A regular expression defining the field separator.
+     * @throws MalformedPatternException If the separator cannot be compiled.
+     */
+    public void setFieldSeparator(String separator)
+            throws MalformedPatternException {
+        setFieldSeparator(separator, 0);
+    }
+
+
+    /**
+     * This method reads the provided input one line at a time and for
+     * every registered pattern that is contained in the line it executes
+     * the associated MatchAction's processMatch() method.  If a field
+     * separator has been defined with
+     * {@link #setFieldSeparator setFieldSeparator()}, the
+     * fields member of the MatchActionInfo instance passed to the
+     * processMatch() method is set to a Vector of Strings containing
+     * the split fields of the line.  Otherwise the fields member is set
+     * to null.  If no match was performed to invoke the action (i.e.,
+     * a null pattern was registered), then the match member is set
+     * to null.  Otherwise, the match member will contain the result of
+     * the match.
+     * <p>
+     * The input stream, having been exhausted, is closed right before the
+     * method terminates and the output stream is flushed.
+     * <p>
+     *
+     * @param input    The input stream from which to read lines.
+     * @param output   Where to send output.
+     * @param encoding The character encoding of the InputStream source.
+     *                 If you also want to define an output character encoding,
+     *                 you should use {@link #processMatches(Reader, Writer)}
+     *                 and specify the encodings when creating the Reader and
+     *                 Writer sources and sinks.
+     * @throws IOException If an error occurs while reading input
+     *                     or writing output.
+     * @see MatchActionInfo
+     */
+    public void processMatches(InputStream input, OutputStream output,
+                               String encoding)
+            throws IOException {
+        processMatches(new InputStreamReader(input, encoding),
+                new OutputStreamWriter(output));
+    }
+
+
+    /**
+     * This method reads the provided input one line at a time using the
+     * platform standart character encoding and for every registered
+     * pattern that is contained in the line it executes the associated
+     * MatchAction's processMatch() method.  If a field separator has been
+     * defined with {@link #setFieldSeparator setFieldSeparator()}, the
+     * fields member of the MatchActionInfo instance passed to the
+     * processMatch() method is set to a Vector of Strings containing
+     * the split fields of the line.  Otherwise the fields member is set
+     * to null.  If no match was performed to invoke the action (i.e.,
+     * a null pattern was registered), then the match member is set
+     * to null.  Otherwise, the match member will contain the result of
+     * the match.
+     *
+     * <p>
+     * The input stream, having been exhausted, is closed right before the
+     * method terminates and the output stream is flushed.
+     * <p>
+     *
+     * @param input  The input stream from which to read lines.
+     * @param output Where to send output.
+     * @throws IOException If an error occurs while reading input
+     *                     or writing output.
+     * @see MatchActionInfo
+     */
+    public void processMatches(InputStream input, OutputStream output)
+            throws IOException {
+        processMatches(new InputStreamReader(input),
+                new OutputStreamWriter(output));
+    }
+
+    /**
+     * This method reads the provided input one line at a time and for
+     * every registered pattern that is contained in the line it executes
+     * the associated MatchAction's processMatch() method.  If a field
+     * separator has been defined with
+     * {@link #setFieldSeparator setFieldSeparator()}, the
+     * fields member of the MatchActionInfo instance passed to the
+     * processMatch() method is set to a Vector of Strings containing
+     * the split fields of the line.  Otherwise the fields member is set
+     * to null.  If no match was performed to invoke the action (i.e.,
+     * a null pattern was registered), then the match member is set
+     * to null.  Otherwise, the match member will contain the result of
+     * the match.
+     * <p>
+     * The input stream, having been exhausted, is closed right before the
+     * method terminates and the output stream is flushed.
+     * <p>
+     *
+     * @param input  The input stream from which to read lines.
+     * @param output Where to send output.
+     * @throws IOException If an error occurs while reading input
+     *                     or writing output.
+     * @see MatchActionInfo
+     */
+    public void processMatches(Reader input, Writer output)
+            throws IOException {
+        int patternCount, current;
+        LineNumberReader reader = new LineNumberReader(input);
+        PrintWriter writer = new PrintWriter(output);
+        MatchActionInfo info = new MatchActionInfo();
+        Object obj;
+        Pattern pattern;
+        MatchAction action;
+        List fields = new ArrayList();
+
+        // Set those things that will not change.
+        info.matcher = __matcher;
+        info.fieldSeparator = __fieldSeparator;
+        info.input = reader;
+        info.output = writer;
+        info.fields = null;
+        patternCount = __patterns.size();
+
+        info.lineNumber = 0;
+
+        while ((info.line = reader.readLine()) != null) {
+            info.charLine = info.line.toCharArray();
+            for (current = 0; current < patternCount; current++) {
+                obj = __patterns.elementAt(current);
+                // If a pattern is null, it means to do it for every line.
+                if (obj != null) {
+                    pattern = (Pattern) __patterns.elementAt(current);
+                    if (__matcher.contains(info.charLine, pattern)) {
+                        info.match = __matcher.getMatch();
+                        info.lineNumber = reader.getLineNumber();
+                        info.pattern = pattern;
+                        if (__fieldSeparator != null) {
+                            fields.clear();
+                            Util.split(fields, __matcher, __fieldSeparator, info.line);
+                            info.fields = fields;
+                        } else
+                            info.fields = null;
+                        action = (MatchAction) __actions.elementAt(current);
+                        action.processMatch(info);
+                    }
+                } else {
+                    info.match = null;
+                    info.lineNumber = reader.getLineNumber();
+                    if (__fieldSeparator != null) {
+                        fields.clear();
+                        Util.split(fields, __matcher, __fieldSeparator, info.line);
+                        info.fields = fields;
+                    } else
+                        info.fields = null;
+                    action = (MatchAction) __actions.elementAt(current);
+                    action.processMatch(info);
+                }
+            }
+        }
+
+        // Flush output but don't close, close input since we reached end.
+        writer.flush();
+        reader.close();
+    }
 
 
 }

@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,8 +58,8 @@
 
 package org.apache.oro.text.awk;
 
-import java.io.*;
-import org.apache.oro.text.regex.*;
+import java.io.IOException;
+import java.io.Reader;
 
 /**
  * The AwkStreamInput class is used to look for pattern matches in an
@@ -86,98 +86,102 @@ import org.apache.oro.text.regex.*;
  * having to read a stream more than once for whatever reason.
  *
  * @version @version@
- * @since 1.0
  * @see AwkMatcher
+ * @since 1.0
  */
 public final class AwkStreamInput {
-  static final int _DEFAULT_BUFFER_INCREMENT = 2048;
-  private Reader __searchStream;
-  private int __bufferIncrementUnit;
-  boolean _endOfStreamReached;
-  // The offset into the stream corresponding to buffer[0]
-  int _bufferSize, _bufferOffset, _currentOffset;
-  char[] _buffer;
+    static final int _DEFAULT_BUFFER_INCREMENT = 2048;
+    private Reader __searchStream;
+    private int __bufferIncrementUnit;
+    boolean _endOfStreamReached;
+    // The offset into the stream corresponding to buffer[0]
+    int _bufferSize, _bufferOffset, _currentOffset;
+    char[] _buffer;
 
-  /**
-   * We use this default contructor only within the package to create a dummy
-   * AwkStreamInput instance.
-   */
-  AwkStreamInput() {
-    _currentOffset = 0;
-  }
-
-
-  /**
-   * Creates an AwkStreamInput instance bound to a Reader with a
-   * specified initial buffer size and default buffer increment.
-   * <p>
-   * @param input  The InputStream to associate with the AwkStreamInput
-   *        instance.
-   * @param bufferIncrement  The initial buffer size and the default buffer
-   *      increment to use when the input buffer has to be increased in
-   *      size.
-   */
-  public AwkStreamInput(Reader input, int bufferIncrement) {
-    __searchStream = input;
-    __bufferIncrementUnit = bufferIncrement;
-    _buffer = new char[bufferIncrement];
-    _bufferOffset = _bufferSize  =  _currentOffset = 0;
-    _endOfStreamReached = false;
-  }
+    /**
+     * We use this default contructor only within the package to create a dummy
+     * AwkStreamInput instance.
+     */
+    AwkStreamInput() {
+        _currentOffset = 0;
+    }
 
 
-  /**
-   * Creates an AwkStreamInput instance bound to a Reader with an
-   * initial buffer size and default buffer increment of 2048 bytes.
-   * <p>
-   * @param input  The InputStream to associate with the AwkStreamInput
-   *        instance.
-   */
-  public AwkStreamInput(Reader input) {
-    this(input, _DEFAULT_BUFFER_INCREMENT);
-  }
+    /**
+     * Creates an AwkStreamInput instance bound to a Reader with a
+     * specified initial buffer size and default buffer increment.
+     * <p>
+     *
+     * @param input           The InputStream to associate with the AwkStreamInput
+     *                        instance.
+     * @param bufferIncrement The initial buffer size and the default buffer
+     *                        increment to use when the input buffer has to be increased in
+     *                        size.
+     */
+    public AwkStreamInput(Reader input, int bufferIncrement) {
+        __searchStream = input;
+        __bufferIncrementUnit = bufferIncrement;
+        _buffer = new char[bufferIncrement];
+        _bufferOffset = _bufferSize = _currentOffset = 0;
+        _endOfStreamReached = false;
+    }
 
-  // Only called when buffer overflows
-  int _reallocate(int initialOffset) throws IOException {
-    int offset, bytesRead;
-    char[] tmpBuffer;
 
-    if(_endOfStreamReached)
-      return _bufferSize;
+    /**
+     * Creates an AwkStreamInput instance bound to a Reader with an
+     * initial buffer size and default buffer increment of 2048 bytes.
+     * <p>
+     *
+     * @param input The InputStream to associate with the AwkStreamInput
+     *              instance.
+     */
+    public AwkStreamInput(Reader input) {
+        this(input, _DEFAULT_BUFFER_INCREMENT);
+    }
 
-    offset    = _bufferSize - initialOffset;
-    tmpBuffer = new char[offset + __bufferIncrementUnit];
+    // Only called when buffer overflows
+    int _reallocate(int initialOffset) throws IOException {
+        int offset, bytesRead;
+        char[] tmpBuffer;
 
-    bytesRead =
-      __searchStream.read(tmpBuffer, offset, __bufferIncrementUnit);
+        if (_endOfStreamReached)
+            return _bufferSize;
 
-    if(bytesRead <= 0){
-      _endOfStreamReached = true;
+        offset = _bufferSize - initialOffset;
+        tmpBuffer = new char[offset + __bufferIncrementUnit];
+
+        bytesRead =
+                __searchStream.read(tmpBuffer, offset, __bufferIncrementUnit);
+
+        if (bytesRead <= 0) {
+            _endOfStreamReached = true;
       /* bytesRead should never equal zero, but if it does, we don't
 	 want to continue to try and read, running the risk of entering
 	 an infinite loop.  Throw an IOException instead, because this
 	 really IS an exception. */
-      if(bytesRead == 0)
-	throw new IOException("read from input stream returned 0 bytes.");
-      return _bufferSize;
-    } else {
-      _bufferOffset += initialOffset;
-      _bufferSize = offset + bytesRead;
+            if (bytesRead == 0)
+                throw new IOException("read from input stream returned 0 bytes.");
+            return _bufferSize;
+        } else {
+            _bufferOffset += initialOffset;
+            _bufferSize = offset + bytesRead;
 
-      System.arraycopy(_buffer, initialOffset, tmpBuffer, 0, offset);
-      _buffer = tmpBuffer;
+            System.arraycopy(_buffer, initialOffset, tmpBuffer, 0, offset);
+            _buffer = tmpBuffer;
+        }
+
+        return offset;
     }
 
-    return offset;
-  }
+    boolean read() throws IOException {
+        _bufferOffset += _bufferSize;
+        _bufferSize = __searchStream.read(_buffer);
+        _endOfStreamReached = (_bufferSize == -1);
+        return (!_endOfStreamReached);
+    }
 
-  boolean read() throws IOException {
-    _bufferOffset+=_bufferSize;
-    _bufferSize = __searchStream.read(_buffer);
-    _endOfStreamReached = (_bufferSize == -1);
-    return (!_endOfStreamReached);
-  }
-
-  public boolean endOfStream() { return _endOfStreamReached; }
+    public boolean endOfStream() {
+        return _endOfStreamReached;
+    }
 
 }

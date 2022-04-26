@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,10 +58,9 @@
 
 package org.apache.oro.text;
 
-import java.util.*;
-
-import org.apache.oro.text.regex.*;
-import org.apache.oro.util.*;
+import org.apache.oro.text.regex.PatternCompiler;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.util.CacheLRU;
 
 /**
  * This class is a GenericPatternCache subclass implementing an LRU
@@ -72,53 +71,54 @@ import org.apache.oro.util.*;
  * the best general purpose pattern cache replacement policy.
  *
  * @version @version@
- * @since 1.0
  * @see GenericPatternCache
+ * @since 1.0
  */
 public final class PatternCacheLRU extends GenericPatternCache {
 
-  /**
-   * Creates a PatternCacheLRU instance with a given cache capacity,
-   * and initialized to use a given PatternCompiler instance as a pattern
-   * compiler.
-   * <p>
-   * @param capacity  The capacity of the cache.
-   * @param compiler  The PatternCompiler to use to compile patterns.
-   */
-  public PatternCacheLRU(int capacity, PatternCompiler compiler) {
-    super(new CacheLRU(capacity), compiler);
-  }
+    /**
+     * Creates a PatternCacheLRU instance with a given cache capacity,
+     * and initialized to use a given PatternCompiler instance as a pattern
+     * compiler.
+     * <p>
+     *
+     * @param capacity The capacity of the cache.
+     * @param compiler The PatternCompiler to use to compile patterns.
+     */
+    public PatternCacheLRU(int capacity, PatternCompiler compiler) {
+        super(new CacheLRU(capacity), compiler);
+    }
 
-  /**
-   * Same as:
-   * <blockquote><pre>
-   * PatternCacheLRU(GenericPatternCache.DEFAULT_CAPACITY, compiler);
-   * </pre></blockquote>
-   */
-  public PatternCacheLRU(PatternCompiler compiler) {
-    this(GenericPatternCache.DEFAULT_CAPACITY, compiler);
-  }
+    /**
+     * Same as:
+     * <blockquote><pre>
+     * PatternCacheLRU(GenericPatternCache.DEFAULT_CAPACITY, compiler);
+     * </pre></blockquote>
+     */
+    public PatternCacheLRU(PatternCompiler compiler) {
+        this(GenericPatternCache.DEFAULT_CAPACITY, compiler);
+    }
 
 
-  /**
-   * Same as:
-   * <blockquote><pre>
-   * PatternCacheLRU(capacity, new Perl5Compiler());
-   * </pre></blockquote>
-   */
-  public PatternCacheLRU(int capacity) {
-    this(capacity, new Perl5Compiler());
-  }
+    /**
+     * Same as:
+     * <blockquote><pre>
+     * PatternCacheLRU(capacity, new Perl5Compiler());
+     * </pre></blockquote>
+     */
+    public PatternCacheLRU(int capacity) {
+        this(capacity, new Perl5Compiler());
+    }
 
-  /**
-   * Same as:
-   * <blockquote><pre>
-   * PatternCacheLRU(GenericPatternCache.DEFAULT_CAPACITY);
-   * </pre></blockquote>
-   */
-  public PatternCacheLRU() {
-    this(GenericPatternCache.DEFAULT_CAPACITY);
-  }
+    /**
+     * Same as:
+     * <blockquote><pre>
+     * PatternCacheLRU(GenericPatternCache.DEFAULT_CAPACITY);
+     * </pre></blockquote>
+     */
+    public PatternCacheLRU() {
+        this(GenericPatternCache.DEFAULT_CAPACITY);
+    }
 
 }
 

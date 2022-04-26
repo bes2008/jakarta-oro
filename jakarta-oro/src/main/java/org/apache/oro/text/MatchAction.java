@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -67,20 +67,21 @@ package org.apache.oro.text;
  * action pairs to a MatchActionProcessor instance.
  *
  * @version @version@
- * @since 1.0
  * @see MatchActionProcessor
  * @see MatchActionInfo
+ * @since 1.0
  */
 public interface MatchAction {
-  /**
-   * This method is called by MatchActionProcessor when it finds an associated
-   * pattern in a line of input.  Information pertaining to the matched
-   * line is included in the MatchActionInfo parameter.
-   * <p>
-   * @see MatchActionProcessor
-   * @see MatchActionInfo
-   * @param matchInfo  The match information associated with the line
-   *                   matched by MatchActionProcessor.
-   */
-  public void processMatch(MatchActionInfo matchInfo);
+    /**
+     * This method is called by MatchActionProcessor when it finds an associated
+     * pattern in a line of input.  Information pertaining to the matched
+     * line is included in the MatchActionInfo parameter.
+     * <p>
+     *
+     * @param matchInfo The match information associated with the line
+     *                  matched by MatchActionProcessor.
+     * @see MatchActionProcessor
+     * @see MatchActionInfo
+     */
+    public void processMatch(MatchActionInfo matchInfo);
 }

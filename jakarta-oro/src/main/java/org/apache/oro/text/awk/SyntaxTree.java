@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,7 +58,7 @@
 
 package org.apache.oro.text.awk;
 
-import java.util.*;
+import java.util.BitSet;
 
 /*
  * IMPORTANT!!!!!!!!!!!!!
@@ -72,51 +72,51 @@ import java.util.*;
  * @since 1.0
  */
 final class SyntaxTree {
-  int _positions;
-  SyntaxNode _root;
-  LeafNode[] _nodes;
-  BitSet[] _followSet;
-  
-  SyntaxTree(SyntaxNode root, int positions) {
-    _root      = root;
-    _positions = positions;
-  }
+    int _positions;
+    SyntaxNode _root;
+    LeafNode[] _nodes;
+    BitSet[] _followSet;
 
-  void _computeFollowPositions() {
-    int index;
-
-    _followSet = new BitSet[_positions];
-    _nodes     = new LeafNode[_positions];
-    index =    _positions;
-
-    while(0 < index--)
-      _followSet[index] = new BitSet(_positions);
-
-    _root._followPosition(_followSet, _nodes);
-  }
-
-  private void __addToFastMap(BitSet pos, boolean[] fastMap, boolean[] done){
-    int token, node;
-
-    for(node = 0; node < _positions; node++){
-      if(pos.get(node) && !done[node]){
-	done[node] = true;
-
-	for(token=0; token < LeafNode._NUM_TOKENS; token++){
-	  if(!fastMap[token])
-	    fastMap[token] = _nodes[node]._matches((char)token);
-	}
-      }
+    SyntaxTree(SyntaxNode root, int positions) {
+        _root = root;
+        _positions = positions;
     }
-  }
 
-  boolean[] createFastMap(){
-    boolean[] fastMap, done;
+    void _computeFollowPositions() {
+        int index;
 
-    fastMap  = new boolean[LeafNode._NUM_TOKENS]; 
-    done     = new boolean[_positions];
-    __addToFastMap(_root._firstPosition(), fastMap, done);
+        _followSet = new BitSet[_positions];
+        _nodes = new LeafNode[_positions];
+        index = _positions;
 
-    return fastMap;
-  }
+        while (0 < index--)
+            _followSet[index] = new BitSet(_positions);
+
+        _root._followPosition(_followSet, _nodes);
+    }
+
+    private void __addToFastMap(BitSet pos, boolean[] fastMap, boolean[] done) {
+        int token, node;
+
+        for (node = 0; node < _positions; node++) {
+            if (pos.get(node) && !done[node]) {
+                done[node] = true;
+
+                for (token = 0; token < LeafNode._NUM_TOKENS; token++) {
+                    if (!fastMap[token])
+                        fastMap[token] = _nodes[node]._matches((char) token);
+                }
+            }
+        }
+    }
+
+    boolean[] createFastMap() {
+        boolean[] fastMap, done;
+
+        fastMap = new boolean[LeafNode._NUM_TOKENS];
+        done = new boolean[_positions];
+        __addToFastMap(_root._firstPosition(), fastMap, done);
+
+        return fastMap;
+    }
 }

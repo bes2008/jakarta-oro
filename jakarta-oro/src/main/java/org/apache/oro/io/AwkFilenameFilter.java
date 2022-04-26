@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,11 +58,12 @@
 
 package org.apache.oro.io;
 
-import java.io.*;
-
-import org.apache.oro.text.regex.*;
-import org.apache.oro.text.awk.*;
-import org.apache.oro.text.*;
+import org.apache.oro.text.MalformedCachePatternException;
+import org.apache.oro.text.PatternCache;
+import org.apache.oro.text.PatternCacheLRU;
+import org.apache.oro.text.awk.AwkCompiler;
+import org.apache.oro.text.awk.AwkMatcher;
+import org.apache.oro.text.regex.PatternMatcher;
 
 /**
  * AwkFilenameFilter is a RegexFilenameFilter subclass that filters on Awk
@@ -70,40 +71,45 @@ import org.apache.oro.text.*;
  * which is required to use this class.
  *
  * @version @version@
- * @since 1.0
  * @see RegexFilenameFilter
  * @see Perl5FilenameFilter
  * @see GlobFilenameFilter
+ * @since 1.0
  */
 public class AwkFilenameFilter extends RegexFilenameFilter {
-  private static final PatternMatcher __MATCHER = new AwkMatcher();
-  private static final PatternCache __CACHE = 
-                            new PatternCacheLRU(new AwkCompiler());
+    private static final PatternMatcher __MATCHER = new AwkMatcher();
+    private static final PatternCache __CACHE =
+            new PatternCacheLRU(new AwkCompiler());
 
-  /**
-   * Construct a filter initialized with the indicated regular expression
-   * and accompanying compilation options conforming to those used by
-   * <code> org.apache.oro.text.awk.AwkCompiler </code>
-   * <p>
-   * @param regex  The regular expression on which to filter.
-   * @param options A set of compilation options.
-   * @exception MalformedCachePatternException  If there is an error in
-   *     compiling the regular expression.  This need not be caught if
-   *     you are using a hard-coded expression that you know is correct.
-   *     But for robustness and reliability you should catch this exception
-   *     for dynamically entered expressions determined at runtime.
-   */
-  public AwkFilenameFilter(String regex, int options) {
-    super(__CACHE, __MATCHER, regex, options);
-  }
+    /**
+     * Construct a filter initialized with the indicated regular expression
+     * and accompanying compilation options conforming to those used by
+     * <code> org.apache.oro.text.awk.AwkCompiler </code>
+     * <p>
+     *
+     * @param regex   The regular expression on which to filter.
+     * @param options A set of compilation options.
+     * @throws MalformedCachePatternException If there is an error in
+     *                                        compiling the regular expression.  This need not be caught if
+     *                                        you are using a hard-coded expression that you know is correct.
+     *                                        But for robustness and reliability you should catch this exception
+     *                                        for dynamically entered expressions determined at runtime.
+     */
+    public AwkFilenameFilter(String regex, int options) {
+        super(__CACHE, __MATCHER, regex, options);
+    }
 
-  /** Same as AwkFilenameFilter(regex, AwkCompiler.DEFAULT_MASK); */
-  public AwkFilenameFilter(String regex) {
-    super(__CACHE, __MATCHER, regex);
-  }
+    /**
+     * Same as AwkFilenameFilter(regex, AwkCompiler.DEFAULT_MASK);
+     */
+    public AwkFilenameFilter(String regex) {
+        super(__CACHE, __MATCHER, regex);
+    }
 
-  /** Same as AwkFilenameFilter(""); */
-  public AwkFilenameFilter() {
-    super(__CACHE, __MATCHER);
-  }
+    /**
+     * Same as AwkFilenameFilter("");
+     */
+    public AwkFilenameFilter() {
+        super(__CACHE, __MATCHER);
+    }
 }

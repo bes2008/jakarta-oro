@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,34 +58,38 @@
 
 package org.apache.oro.text.awk;
 
-import java.util.*;
+import java.util.BitSet;
 
 /**
  * @version @version@
  * @since 1.0
  */
 class CharacterClassNode extends LeafNode {
-  BitSet _characterSet;
+    BitSet _characterSet;
 
-  CharacterClassNode(int position) {
-    super(position);
-    _characterSet = new BitSet(LeafNode._NUM_TOKENS + 1);
-  }
+    CharacterClassNode(int position) {
+        super(position);
+        _characterSet = new BitSet(LeafNode._NUM_TOKENS + 1);
+    }
 
-  void _addToken(int token) { _characterSet.set(token); }
+    void _addToken(int token) {
+        _characterSet.set(token);
+    }
 
-  void _addTokenRange(int min, int max) {
-    while(min <= max)
-      _characterSet.set(min++);
-  }
+    void _addTokenRange(int min, int max) {
+        while (min <= max)
+            _characterSet.set(min++);
+    }
 
-  boolean _matches(char token) { return _characterSet.get(token); }
+    boolean _matches(char token) {
+        return _characterSet.get(token);
+    }
 
-  SyntaxNode _clone(int pos[]) {
-    CharacterClassNode node;
+    SyntaxNode _clone(int pos[]) {
+        CharacterClassNode node;
 
-    node               = new CharacterClassNode(pos[0]++);
-    node._characterSet = (BitSet)_characterSet.clone();
-    return node;
-  }
+        node = new CharacterClassNode(pos[0]++);
+        node._characterSet = (BitSet) _characterSet.clone();
+        return node;
+    }
 }

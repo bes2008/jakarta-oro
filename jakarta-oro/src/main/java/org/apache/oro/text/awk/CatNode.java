@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,75 +58,75 @@
 
 package org.apache.oro.text.awk;
 
-import java.util.*;
+import java.util.BitSet;
 
 /**
  * @version @version@
  * @since 1.0
  */
 final class CatNode extends SyntaxNode {
-  SyntaxNode _left, _right;
+    SyntaxNode _left, _right;
 
-  boolean _nullable() {
-    return (_left._nullable() && _right._nullable());
-  }
-
-  BitSet _firstPosition() {
-    if(_left._nullable()){
-      BitSet ls, rs, bs;
-
-      ls = _left._firstPosition();
-      rs = _right._firstPosition();
-      bs = new BitSet(Math.max(ls.size(), rs.size()));
-      bs.or(rs);
-      bs.or(ls);
-
-      return bs;
+    boolean _nullable() {
+        return (_left._nullable() && _right._nullable());
     }
 
-    return _left._firstPosition();
-  }
+    BitSet _firstPosition() {
+        if (_left._nullable()) {
+            BitSet ls, rs, bs;
 
-  BitSet _lastPosition()  {
-    if(_right._nullable()) {
-      BitSet ls, rs, bs;
+            ls = _left._firstPosition();
+            rs = _right._firstPosition();
+            bs = new BitSet(Math.max(ls.size(), rs.size()));
+            bs.or(rs);
+            bs.or(ls);
 
-      ls = _left._lastPosition();
-      rs = _right._lastPosition();
-      bs = new BitSet(Math.max(ls.size(), rs.size()));
-      bs.or(rs);
-      bs.or(ls);
+            return bs;
+        }
 
-      return bs;
+        return _left._firstPosition();
     }
 
-    return _right._lastPosition();
-  }
+    BitSet _lastPosition() {
+        if (_right._nullable()) {
+            BitSet ls, rs, bs;
+
+            ls = _left._lastPosition();
+            rs = _right._lastPosition();
+            bs = new BitSet(Math.max(ls.size(), rs.size()));
+            bs.or(rs);
+            bs.or(ls);
+
+            return bs;
+        }
+
+        return _right._lastPosition();
+    }
 
 
-  void _followPosition(BitSet[] follow, SyntaxNode[] nodes)  {
-    int size;
-    BitSet leftLast, rightFirst;
+    void _followPosition(BitSet[] follow, SyntaxNode[] nodes) {
+        int size;
+        BitSet leftLast, rightFirst;
 
-    _left._followPosition(follow, nodes);
-    _right._followPosition(follow, nodes);
+        _left._followPosition(follow, nodes);
+        _right._followPosition(follow, nodes);
 
-    leftLast   = _left._lastPosition();
-    rightFirst = _right._firstPosition();
+        leftLast = _left._lastPosition();
+        rightFirst = _right._firstPosition();
 
-    size = leftLast.size();
-    while(0 < size--)
-      if(leftLast.get(size))
-	follow[size].or(rightFirst);
-  }
+        size = leftLast.size();
+        while (0 < size--)
+            if (leftLast.get(size))
+                follow[size].or(rightFirst);
+    }
 
-  SyntaxNode _clone(int pos[]) {
-    CatNode node;
+    SyntaxNode _clone(int pos[]) {
+        CatNode node;
 
-    node        = new CatNode();
-    node._left  = _left._clone(pos);
-    node._right = _right._clone(pos);
+        node = new CatNode();
+        node._left = _left._clone(pos);
+        node._right = _right._clone(pos);
 
-    return node;
-  }
+        return node;
+    }
 }

@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,30 +58,40 @@
 
 package org.apache.oro.text.awk;
 
-import java.util.*;
+import java.util.BitSet;
 
 /**
  * @version @version@
  * @since 1.0
  */
 abstract class LeafNode extends SyntaxNode {
-  static final int _NUM_TOKENS                    = 256;
-  static final int _END_MARKER_TOKEN              = _NUM_TOKENS;
+    static final int _NUM_TOKENS = 256;
+    static final int _END_MARKER_TOKEN = _NUM_TOKENS;
 
-  protected int _position;
-  protected BitSet _positionSet;
+    protected int _position;
+    protected BitSet _positionSet;
 
-  LeafNode(int position){
-    _position = position;
-    _positionSet = new BitSet(position + 1);
-    _positionSet.set(position);
-  }
+    LeafNode(int position) {
+        _position = position;
+        _positionSet = new BitSet(position + 1);
+        _positionSet.set(position);
+    }
 
-  abstract boolean _matches(char token);
-  final boolean _nullable()     { return false; }
-  final BitSet _firstPosition() { return _positionSet; }
-  final BitSet _lastPosition()  { return _positionSet; }
-  final void _followPosition(BitSet[] follow, SyntaxNode[] nodes) {
-    nodes[_position] = this;
-  }
+    abstract boolean _matches(char token);
+
+    final boolean _nullable() {
+        return false;
+    }
+
+    final BitSet _firstPosition() {
+        return _positionSet;
+    }
+
+    final BitSet _lastPosition() {
+        return _positionSet;
+    }
+
+    final void _followPosition(BitSet[] follow, SyntaxNode[] nodes) {
+        nodes[_position] = this;
+    }
 }

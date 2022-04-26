@@ -26,13 +26,13 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro" 
+ * 4. The names "Apache" and "Apache Software Foundation", "Jakarta-Oro"
  *    must not be used to endorse or promote products derived from this
  *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
- * 5. Products derived from this software may not be called "Apache" 
- *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their 
+ * 5. Products derived from this software may not be called "Apache"
+ *    or "Jakarta-Oro", nor may "Apache" or "Jakarta-Oro" appear in their
  *    name, without prior written permission of the Apache Software Foundation.
  *
  * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
@@ -58,25 +58,29 @@
 
 package org.apache.oro.text.awk;
 
-import java.util.*;
+import java.util.BitSet;
 
 /**
  * @version @version@
  * @since 1.0
  */
 abstract class SyntaxNode {
-  abstract boolean _nullable(); 
-  abstract BitSet  _firstPosition();
-  abstract BitSet  _lastPosition();
-  abstract void    _followPosition(BitSet[] follow, SyntaxNode[] nodes);
+    abstract boolean _nullable();
 
-  /**
-   * This method is designed specifically to accommodate the expansion of
-   * an interval into its subparts.
-   * <p>
-   * @param pos  A single element array containing a variable representing
-   *             the current position.  It is made an array to cause it
-   *             to be passed by reference to allow incrementing.
-   */ 
-  abstract SyntaxNode _clone(int pos[]);
+    abstract BitSet _firstPosition();
+
+    abstract BitSet _lastPosition();
+
+    abstract void _followPosition(BitSet[] follow, SyntaxNode[] nodes);
+
+    /**
+     * This method is designed specifically to accommodate the expansion of
+     * an interval into its subparts.
+     * <p>
+     *
+     * @param pos A single element array containing a variable representing
+     *            the current position.  It is made an array to cause it
+     *            to be passed by reference to allow incrementing.
+     */
+    abstract SyntaxNode _clone(int pos[]);
 }
